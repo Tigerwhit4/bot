@@ -1,0 +1,38 @@
+<?php
+	$error_reporting = false;
+
+	$trusted_users = array();
+	$check_hosts = array();
+
+	$mysql_host = "localhost";
+	$mysql_user = "mysqluser";
+	$mysql_pass = "mysqlpw";
+	$mysql_dtba = "mysqldb";
+
+	$jabber_server = "jabberserver";
+	$jabber_port = "5222";
+	$jabber_username = "jabberuser";
+	$jabber_password = "jabberpw";
+
+	$greetings = array();
+
+	$jabber_version_name = "foobot";
+	$jabber_version_version = "0.01";
+	$jabber_version_os = "funix";
+	$jabber_resource = "foobar";
+	$jabber_priority = 5;
+	$jabber_enable_logging = true;
+	$jabber_log_filename = "logs/xmpp.log";
+
+	$online_msg = "foo";
+	$logdir = "logs";
+
+# Set to IP address of MPD server to enable
+	$mpd_host = false;
+	$mpd_port = "";
+	$mpd_passwd = "";
+
+	$rss_feeds = array();
+        $rss_receiver[0] = array();
+
+?>

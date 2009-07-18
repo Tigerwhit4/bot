@@ -1,0 +1,31 @@
+create table `blog` (
+  `id` int(5) not null auto_increment,
+  `jid` varchar(50) not null,
+  `content` text not null,
+  `title` varchar(150) not null,
+  `date` datetime not null,
+  `tags` text not null,
+  primary key  (`id`)
+) engine=myisam  default charset=latin1;
+
+create table `quotes` (
+  `id` int(5) not null auto_increment,
+  `content` text not null,
+  `channel` varchar(50) not null,
+  `date` datetime not null,
+  primary key  (`id`)
+) engine=myisam  default charset=latin1;
+
+create table `status` (
+  `id` int(5) unsigned not null auto_increment,
+  `jid` varchar(50) not null,
+  `status` int(5) not null,
+  primary key  (`id`)
+) engine=myisam  default charset=latin1;
+
+CREATE TABLE IF NOT EXISTS `rss_feeds` (
+  `id` int(5) unsigned NOT NULL auto_increment,
+  `rss_url` text collate latin1_general_ci NOT NULL,
+  `title` text collate latin1_general_ci NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=233 ;

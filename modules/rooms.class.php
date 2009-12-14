@@ -85,7 +85,7 @@ class rooms {
 		if(!in_array($from, $trust_users))
 			return;
 
-		if(eregi("^channel (add|del) (.*)$", $msg, $matches)) {
+		if(preg_match("/^channel (add|del) (.*)$/", $msg, $matches)) {
 			if($matches[1] == "add") {
 				$channel = get_config("channel");
 				$channel = trim($channel . "\n" . $matches[2]);
@@ -117,7 +117,7 @@ class rooms {
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => $channel));
 		}
 
-		if(eregi("^channel_log (add|del) (.*)$", $msg, $matches)) {
+		if(preg_match("/^channel_log (add|del) (.*)$/i", $msg, $matches)) {
 			if($matches[1] == "add") {
 				$channel_log = get_config("channel_log");
 				$channel_log = trim($channel_log . "\n" . $matches[2]);

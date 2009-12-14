@@ -29,7 +29,7 @@
 	$handle = opendir("modules/");
 
 	while($file = readdir($handle)) {
-		if(eregi('^(.*)\.class\.php$', $file, $result)) {
+		if(preg_match('/^(.*)\.class\.php$/i', $file, $result)) {
 			$modul_name = $result[1];
 			require_once("modules/" . $modul_name . ".class.php");
 			$reflector = new ReflectionClass($modul_name);

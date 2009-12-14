@@ -29,10 +29,10 @@ class config {
 		if(!in_array($from, $trust_users))
 			return;
 
-		if(eregi("^config (set|get|del) (.*)$", $msg, $matches)) {
+		if(preg_match("/^config (set|get|del) (.*)$/i", $msg, $matches)) {
 			$return = "FAIL!";
 
-			if($matches[1] == "set" && eregi("^([^:]{1,}):(.*)$", $matches[2], $submatches)) {
+			if($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/i", $matches[2], $submatches)) {
 				set_config($submatches[1], $submatches[2]);
 
 				if(get_config($submatches[1]) == $submatches[2])
@@ -52,7 +52,7 @@ class config {
 			}
 
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => $return));
-		} elseif(eregi("^config rehash$", $msg)) {
+		} elseif(preg_match("/^config rehash$/i", $msg)) {
 			global $config;
 			$config = array();
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => "ok."));

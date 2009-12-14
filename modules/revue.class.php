@@ -31,10 +31,10 @@ class revue {
 		if(!isset(revue::$revues[$from]))
 			revue::$revues[$from] = array();
 
-		if((rand(0, 10) == 1) && ($JABBER->username != $user) && !(eregi("^\!.*$", $msg)))
+		if((rand(0, 10) == 1) && ($JABBER->username != $user) && !(preg_match("/^\!.*$/i", $msg)))
 			revue::$revues[$from][rand(0, 9)] = array("time" => time(), "user" => $user, "msg" => $msg);
 
-		if(eregi("^\!revue$", $msg)) {
+		if(preg_match("/^\!revue$/i", $msg)) {
 			$temp = "";
 			foreach(revue::$revues[$from] as $revue) {
 				if($temp != "") $temp .= "\n";

@@ -29,9 +29,9 @@ class rechner {
 		if($JABBER->username == $user)
 			return;
 
-		if(eregi("^\!rechner ", $msg)) {
-			if(eregi("^\!rechner ((w|wayne|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|[0-9+.,*/()\^ -]+)*$)", $msg, $matches)) {
-				$match = eregi_replace("(w|wayne)", "(42/23)", $matches[1]);
+		if(preg_match("/^\!rechner /i", $msg)) {
+			if(preg_match("/^\!rechner ((w|wayne|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|[0-9+.,*/()\^ -]+)*$/i)", $msg, $matches)) {
+				$match = preg_replace("/(w|wayne)/i", "(42/23)", $matches[1]);
 				$url = "http://www.google.de/search?q=" . urlencode($match);
 	
 				$inputfile = file_get_contents($url);

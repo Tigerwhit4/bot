@@ -29,8 +29,8 @@ class wetter {
 		if($JABBER->username == $user)
 			return;
 
-		if(eregi("^\!wetter", $msg)) {
-			if(eregi("^\!wetter ([a-zäüöß0-9 -]*$)", $msg, $matches))
+		if(preg_match("/^\!wetter/i", $msg)) {
+			if(preg_match("/^\!wetter ([a-zäüöß0-9 -]*$/i)", $msg, $matches))
 				$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+" . urlencode($matches[1]);
 			else
 				$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+bremen";

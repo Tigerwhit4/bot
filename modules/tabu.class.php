@@ -39,7 +39,7 @@ class tabu {
 
 		if(tabu::$on[$from] && is_array(tabu::$words[$from])) {
 			foreach(tabu::$words[$from] as $word) {
-				if(eregi("^[^\!]{1}.*$", $msg) && (eregi("[^a-z0-9öäüß]{1}" . $word . "[^a-z0-9äöüß]{1}", $msg) || eregi("^" . $word . "[^a-z0-9äöüß]{1}", $msg) || eregi("[^a-z0-9äöüß]{1}" . $word . "$", $msg) || eregi("^" . $word . "$", $msg))) {
+				if(preg_match("/^[^\!]{1}.*$/i", $msg) && (preg_match("/[^a-z0-9öäüß]{1}" . $word . "[^a-z0-9äöüß]{1}/i", $msg) || preg_match("/^" . $word . "[^a-z0-9äöüß]{1}/i", $msg) || preg_match("/[^a-z0-9äöüß]{1}" . $word . "$/i", $msg) || preg_match("/^" . $word . "$/i", $msg))) {
 					$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $user . " hat leider $word benutzt, was verboten ist."));
 
 					$kick = $JABBER->SendIq($from, "set", "kick" . time(), "http://jabber.org/protocol/muc#admin", "<item nick='{$user}' role='none'><reason>Tabu! " . $word . " ist doch verboten.</reason></item>", $from);
@@ -55,17 +55,17 @@ class tabu {
 			}
 		}
 
-		if((eregi("^\!tabu start$", $msg, $matches))) {
+		if((preg_match("/^\!tabu start$/i", $msg, $matches))) {
 			tabu::$on[$from] = true;
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Tabu gestartet."));
 		}
 
-		if((eregi("^!tabu stop$", $msg, $matches))) {
+		if((preg_match("/^!tabu stop$/i", $msg, $matches))) {
 			tabu::$on[$from] = false;
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Tabu kann man nicht stoppen..."));
 		}
 
-		if((eregi("^\!tabu add ([a-z0-9üöäß]*)$", $msg, $matches))) {
+		if((preg_match("/^\!tabu add ([a-z0-9üöäß]*)$/i", $msg, $matches))) {
 			$match = strtolower($matches[1]);
 
 			if(!is_array(tabu::$words[$from])) tabu::$words[$from] = array();
@@ -77,7 +77,7 @@ class tabu {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $match . " ist schon auf der Liste."));
 		}
 
-		if((eregi("^\!tabu del ([a-z0-9üöäß]*)$", $msg, $matches))) {
+		if((preg_match("/^\!tabu del ([a-z0-9üöäß]*)$/i", $msg, $matches))) {
 			$match = strtolower($matches[1]);
 
 			if(in_array($match, tabu::$words[$from])) {
@@ -87,7 +87,7 @@ class tabu {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Du mogelst. " . $match . " ist garnicht auf der Liste."));
 		}
 
-		if((eregi("^\!tabu$", $msg, $matches))) {
+		if((preg_match("/^\!tabu$/i", $msg, $matches))) {
 			if(is_array(tabu::$words[$from])) {
 				if(tabu::$on[$from])
 					$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Tabu laeuft mit folgender Liste:\n" . join("\n", tabu::$words[$from])));

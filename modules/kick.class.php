@@ -37,7 +37,7 @@ class kick {
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
-		if((eregi("^kick ([^:]*):(.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if((preg_match("/^kick ([^:]*):(.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];
@@ -54,7 +54,7 @@ class kick {
 			}
 		}
 
-		if((eregi("^kickr (.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if((preg_match("/^kickr (.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];

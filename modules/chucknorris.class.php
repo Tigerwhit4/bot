@@ -16,7 +16,7 @@ class chucknorris {
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
-		if((eregi("^say ([^:]*):(.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if((preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];

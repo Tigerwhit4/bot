@@ -31,7 +31,7 @@ class rechner {
 
 		if(preg_match("/^\!rechner /i", $msg)) {
 			if(preg_match("/^\!rechner ((w|wayne|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|[0-9+.,*\/()\^ -]+)*)$/i", $msg, $matches)) {
-				$match = preg_replace("/(w|wayne)/i", "(42/23)", $matches[1]);
+				$match = preg_replace("/(wayne|w)/i", "(42/23)", $matches[1]);
 				$url = "http://www.google.de/search?q=" . urlencode($match);
 	
 				$inputfile = file_get_contents($url);

@@ -54,7 +54,7 @@
 		$result = make_mysql_query("SELECT * FROM `config` WHERE `name` = '" . make_mysql_escape($name) . "' LIMIT 1;");
 		$row = make_mysql_fetch_array($result, MYSQL_ASSOC);
 		$config[$name] = $row["value"];
-		return $row["value"];
+		return trim($row["value"]);
 	}
 
 	function set_config($name, $value) {

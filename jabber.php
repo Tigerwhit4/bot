@@ -56,6 +56,9 @@
 				array_push($modules_cron, $modul_name);
 		}
 	}
+	
+	// cleanup status table
+	make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
 	$JABBER = new Jabber;
 	$JABBER->server = $jabber_server;
@@ -97,21 +100,21 @@
 		global $trusted_users;
 		global $rooms;
 
-		$jid = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-		$jid2 = $JABBER->StripJID($jid);
+		$jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+		$jid = $JABBER->StripJID($jid2);
 
-		if(($jid2 != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid2, $rooms))) {
+		if(($jid != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid, $rooms))) {
 			$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
 
 			if($lines < 1)
 				$fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
-			else
-				$fp = make_sql_query("UPDATE `status` SET `status` = '1' WHERE `jid` ='" . make_sql_escape($jid) . "';");
+			else if(make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "')=0;") > 0)
+				$fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid2)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
 		}
 
-		if(in_array($jid2, $trusted_users)) {
-			if(!in_array($jid2, $trust_users))
-				$trust_users[] = $jid2;
+		if(in_array($jid, $trusted_users)) {
+			if(!in_array($jid, $trust_users))
+				$trust_users[] = $jid;
 		}
 	}
 
@@ -120,18 +123,18 @@
 		global $trust_users;
 		global $trusted_users;
 
-		$jid = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-		$jid2 = $JABBER->StripJID($jid);
+		$jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+		$jid = $JABBER->StripJID($jid2);
 
-		$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
+		$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "') > 0;");
 
 		if($lines > 0)
-			$fp = make_sql_query("UPDATE `status` SET `status` = '0' WHERE `jid` ='" . make_sql_escape($jid) . "';");
+			$fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid2)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
 
-		if(in_array($jid2, $trusted_users)) {
-			if(in_array($jid2, $trust_users)) {
+		if(in_array($jid, $trusted_users)) {
+			if(in_array($jid, $trust_users)) {
 				foreach($trust_users as $trust_user) {
-					if($jid2 != $trust_user)
+					if($jid != $trust_user)
 						$trust_users2[] = $trust_user;
 				}
 
@@ -184,6 +187,9 @@
 		foreach($modules_cron as $modul_name)
 			eval($modul_name . '::cron($i);');
 	}
+	
+	// cleanup status table
+	make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
 	$JABBER->Disconnect();
 	@sql_close($sql_connection);

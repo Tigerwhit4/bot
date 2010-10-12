@@ -50,13 +50,14 @@ class mensa {
 			else
 				$mensa = file_get_contents($url);
 
-			if(eregi("<div id=\"mensadata\">(.*)</div>", $mensa, $match))
+			if(preg_match("/\<div id=\"mensadata\"\>(.*)\<\/div\>/isU", $mensa, $match))
 				$content = html_entity_decode($match[1], ENT_COMPAT, "UTF-8");
 			else
 				$content = "";
 
 			if(preg_match('/\<h3\>/iU', $content)) {
-				preg_match_all('/\<h3\>(.*)\<\/h3\>(.*)\<br \/\>/iU', $content, $matches);
+
+				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<p\>(.*)\<\/p\>/iU', $content, $matches);
 				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<ul\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<\/ul\>/iU', $content, $auflauf);
 				preg_match_all('/\<h3\>Beilagen\<\/h3\>\n\<ul\>\n(.*)\n\<\/ul\>/iUs', $content, $beilagen);
 

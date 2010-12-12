@@ -9,7 +9,6 @@ class log {
 		global $logdir;
 		global $room_topic;
 		global $rooms_log;
-		global $handle;
 		
 		global $logday;
 
@@ -43,13 +42,11 @@ class log {
 
 				if(!is_dir($logdir . "/" . $from))
 					system("mkdir -p " . $logdir . "/" . $from);
-
-				@fclose($handle);
-				$handle = fopen($logdir . "/" . $from . "/" . $logday . ".log", "a");
 			}
-
+			$handle = fopen($logdir . "/" . $from . "/" . $logday . ".log", "a");
 			$msg2 = ereg_replace("\n","\n>> ", $msg);
 			fwrite($handle, $timestmp . " " . $from . ": <" . $user . "> " . $msg2 . "\n");
+			@fclose($handle);
 		}
 	}
 }

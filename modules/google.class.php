@@ -32,25 +32,18 @@ class google {
 
 		if(preg_match('/^!google (.*)/i', $msg, $matches)) {
 			$msg2 = $matches[1];
-			$msg2 = addcslashes($msg2, "'\\");
-
-			ob_start();
-			system("ruby << EOF
-					require 'rubygems'
-					require 'mechanize'
-
-					agent = WWW::Mechanize.new
-					page = agent.get(\"http://www.google.com/\")
-					search_form = page.forms_with(:name => \"f\").first
-					search_form.q = '" . $msg2 . "'
-					agent.redirect_ok = false
-					results = agent.submit(search_form, search_form.buttons_with(:name => \"btnI\").first)
-					puts results.header[\"location\"]"
-					);
-					$google = rtrim(ob_get_contents());
-					ob_end_clean();
-
-					$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($google)));
+			
+			$http_response_header = array ();
+			$url = "http://www.google.de/search?btnI=Auf+gut+Glück!&aq=f&oq=&q=" . urlencode($msg2);
+			$content = file_get_contents($url, false, stream_context_create(array (
+				'http' => array (
+					'header' => "User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; de; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13\r\n"
+				)
+			)));
+			$redir = explode(" ", $http_response_header[1]);
+			$JABBER->SendMessage($from, "groupchat", NULL, array (
+				"body" => $redir[1]
+			));
 		}
 	}
 

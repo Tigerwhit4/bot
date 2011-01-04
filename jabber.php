@@ -22,6 +22,9 @@ require "threads/fritzbox_thread.php";
 if (!Thread :: available())
 	die("Threads not supported\n");
 
+if (!function_exists("curl_init"))
+	die("curl is necessary");
+
 ini_set("default_socket_timeout", 5);
 ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3");
 

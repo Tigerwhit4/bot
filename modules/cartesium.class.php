@@ -31,7 +31,11 @@ class cartesium {
 			return;
 
 		if($msg == "!cartesium") {
-				$json = shell_exec("wget --no-check-certificate -q -O - -- https://smartenergy.uni-bremen.de/yoda/");
+				$ch = curl_init("https://smartenergy.uni-bremen.de/yoda/");
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$json = curl_exec($ch);
+				curl_close($ch);
+
 				preg_match_all('/\<tr\>\<td\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<td align=right\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info);
 				preg_match_all('/\<tr\>\<td\>\<div class="temp"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info2);
 				$msg = "";

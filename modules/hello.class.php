@@ -76,7 +76,7 @@ class hello {
 	}
 
 	public static function help() {
-		return utf8_decode("you can say " . str_replace("|", " or ", get_config("hello_greetings")) . " to me.");
+		return "you can say " . str_replace("|", " or ", get_config("hello_greetings")) . " to me.";
 	}
 
 }

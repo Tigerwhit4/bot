@@ -35,7 +35,7 @@ class rss {
 
 				$feed = new SimplePie();
 				$feed->set_feed_url($rss_feed);
-				$feed->enable_cache(true);
+				$feed->enable_cache(false);
 				$feed->init();
 
 				$items = $feed->get_items();

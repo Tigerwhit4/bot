@@ -9,6 +9,7 @@
 		if(is_null($sql_connection) || !@mysql_ping($sql_connection)) {
 			@mysql_close($sql_connection);
 			$sql_connection = mysql_connect($sql_host, $sql_user, $sql_pass) || die("Error establishing database connection.");
+			mysql_set_charset('utf8', $sql_connection);
 			mysql_select_db($sql_dtba);
 		}
 	}

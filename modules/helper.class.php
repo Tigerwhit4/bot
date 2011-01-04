@@ -47,7 +47,7 @@ class helper {
 				}
 			}
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($help)));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $help));
 		}
 	}
 
@@ -82,7 +82,7 @@ class helper {
 				}
 			}
 
-			$JABBER->SendMessage($from, "chat", NULL, array("body" => utf8_encode(str_replace("!", "", $help))));
+			$JABBER->SendMessage($from, "chat", NULL, array("body" => str_replace("!", "", $help)));
 		}
 	}
 

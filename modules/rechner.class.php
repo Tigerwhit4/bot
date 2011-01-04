@@ -40,7 +40,6 @@ class rechner {
 				
 				$temp = str_replace('<sup>', '^', $temp);
 				$temp = strip_tags($temp);
-				$temp = utf8_encode($temp);
 				$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
 				$temp = str_replace("\n", "", $temp);
 				$temp = str_replace("Â", "", $temp);

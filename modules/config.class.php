@@ -43,8 +43,7 @@ class config {
 					$return = "nicht ok.\n\ndas heisst FAIL!";
 			}
 			elseif ($matches[1] == "get") {
-				$return = utf8_decode(get_config($matches[2]));
-				$return = utf8_encode($return);
+				$return = get_config($matches[2]);
 
 				if ($return == "")
 					$return = "nix is da gewesen.";

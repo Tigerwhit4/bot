@@ -36,12 +36,11 @@ class quotes {
 			$inputfile = file_get_contents($url);
 			$temp = extractstring($inputfile, '<div class="zitat">', '</div>');
 			$temp = strip_tags($temp);
-			$temp = utf8_decode($temp);
-			$temp = html_entity_decode($temp);
+			$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
 			$temp = str_replace("\n", "", $temp);
 			$gbo = trim($temp);
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($gbo)));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $gbo));
 		} elseif($msg == "!bash") {
 			$url = "http://bash.org/?random";
 

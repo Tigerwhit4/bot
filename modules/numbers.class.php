@@ -32,11 +32,11 @@ class numbers {
 
 		if($msg == "!date") {
 			$date = date("d.m.Y W.") . " Woche " . date("H:i:s");
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($date)));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $date));
 		} elseif($msg == "!pi") {
 			$prec_for = ini_get("precision");
 			ini_set("precision", "50");
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode(pi())));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => pi()));
 			ini_set("precision", $prec_for);
 		} elseif($msg == "!number") {
 			$number = "";
@@ -44,7 +44,7 @@ class numbers {
 			while(strlen($number) != 10)
 				$number .= zufallszahl(0, 9);
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($number)));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $number));
 		}
 	}
 

@@ -16,9 +16,8 @@ class rss {
 		global $rss_receiver;
 
 		if (($i % 900) == 1) {
-			$result = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
-			while ($row = make_sql_fetch_array($result)) {
-				$rss_feed = $row[0];
+			$feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
+			while (list($rss_feed) = make_sql_fetch_array($feeds, MYSQL_NUM)) {
 				$msg = "";
 				$item_old_title = array ();
 				$item_old_date = array ();
@@ -155,6 +154,10 @@ class rss {
 				"body" => $msg
 			));
 		}
+	}
+
+	public static function help() {
+		return "subscribe <url> - subscribe to the feed <url>";
 	}
 }
 ?>

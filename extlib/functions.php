@@ -129,6 +129,7 @@
 
 	function split_message($message) {
 		global $rooms;
+		global $JABBER;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = explode("/", $from, 2);

@@ -142,6 +142,6 @@
 
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
-		return Array($from, $resource, $message);
+		return Array($from, $resource, $msg);
 	}
 ?>

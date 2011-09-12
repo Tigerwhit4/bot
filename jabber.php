@@ -202,7 +202,7 @@ function Handler_message_chat($message) {
 		call_user_func_array(array($modul_name, 'chat'), array($message));
 }
 
-foreach ($modules_chat as $modul_name)
+foreach ($modules_init as $modul_name)
 	call_user_func(array($modul_name, 'init'));
 
 $i = 0;
@@ -210,13 +210,13 @@ while ($JABBER->CruiseControl(1)) {
 	$i++;
 
 	foreach ($modules_cron as $modul_name)
-		call_user_func_array(array($modul_name, 'chat'), array($i));
+		call_user_func_array(array($modul_name, 'cron'), array($i));
 }
 
 // cleanup status table
 make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
-foreach ($modules_chat as $modul_name)
+foreach ($modules_shutdown as $modul_name)
 	call_user_func(array($modul_name, 'shutdown'));
 
 $JABBER->Disconnect();

@@ -15,8 +15,10 @@ class rss {
 		global $rooms;
 		global $rss_receiver;
 
-		if (is_array($rss_feeds) && (($i % 900) == 1)) {
-			foreach ($rss_feeds as $key => $rss_feed) {
+		if (($i % 900) == 1) {
+			$result = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
+			while ($row = make_sql_fetch_array($result)) {
+				$rss_feed = $row[0];
 				$msg = "";
 				$item_old_title = array ();
 				$item_old_date = array ();
@@ -58,7 +60,9 @@ class rss {
 				}
 
 				if ($msg != "") {
-					foreach ($rss_receiver[$key] as $receiver) {
+					$result = make_sql_query("SELECT `jid` FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($rss_feed) . "';");
+					while ($row = make_sql_fetch_assoc($result)) {
+						$receiver = $row["jid"];
 						if (in_array($receiver, $rooms))
 							$JABBER->SendMessage($receiver, "groupchat", NULL, array (
 								"body" => rtrim($msg)
@@ -73,5 +77,80 @@ class rss {
 		}
 	}
 
+	public static function chat($message) {
+		global $JABBER;
+		global $check_hosts;
+		global $trusted_users;
+		global $trust_users;
+		global $logdir;
+		global $room_topic;
+		global $rooms_log;
+		global $config;
+
+		$i = 0;
+		$timestamp = "";
+		
+		while($timestamp == "" && $i < 5) {
+			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
+			$i++;
+		}
+
+		if($timestamp)
+			return;
+	}
+
+		$from = $JABBER->GetInfoFromMessageFrom($message);
+		$from_temp = explode("/", $from);
+		$from = $from_temp[0];
+		$msg = $JABBER->GetInfoFromMessageBody($message);
+		$user = $from_temp[1];
+
+		if (preg_match("#^subscribe https?://#", $msg)) {
+			list(, $url) = explode($msg, ' ');
+
+			$result = make_sql_num_query("SELECT * FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($from) . "' AND `jid` = '" . make_sql_escape($from) . "';");
+			if ($result > 0)
+				$msg = "You are already subscribed to " . $url;
+			else {
+				$feed = new SimplePie();
+				$feed->set_feed_url($url);
+				$feed->init();
+				$feed->handle_content_type();
+				if($feed->get_type() & SIMPLEPIE_TYPE_ALL) {
+					# feed is valid and supported
+					make_sql_query("INSERT INTO `rss_subscriptions` (`rss_url`, `jid`) VALUES ('" . make_sql_escape($url) . "', '" . make_sql_escape($from) . "');");
+					if(make_sql_affected_rows() == 1)
+						$msg = "You have been successfully subscribed to " . $url . ". To unsubscribe, send me\nunsubscribe " . $url;
+					else
+						$msg = "Sorry, subscribing you to " . $url . " failed.";
+				}
+				else
+					$msg = $url . " is not a valid feed!";
+			}
+
+			$JABBER->SendMessage($receiver, "chat", NULL, array (
+				"body" => $msg
+			));
+		}
+		if (preg_match("#^unsubscribe https?://#", $msg)) {
+			list(, $url) = explode($msg, ' ');
+			$subscribed = make_sql_num_query("SELECT * FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($url) . "' AND `jid` = '" . make_sql_escape($from) . "');");
+			if ($subscribed) {
+				make_sql_query("DELETE FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($url) . "' AND `jid` = '" . make_sql_escape($from) . "');");
+				if(make_sql_affected_rows() == 1)
+					$msg = "You have been successfully unsubscribed from " . $url;
+				else
+					$msg = "Sorry, unsubscribing you from " . $url . " failed.";
+
+				# if this was the last subscriber, delete the cached entries
+				if(make_sql_num_query("SELECT * FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($url) . "';") === 0)
+					make_sql_query("DELETE FROM `rss_feeds` WHERE `rss_url` = '" . make_sql_escape($url) . "';");
+			} else
+				$msg = "You are not subscribed to " . $url . ", thus I can't unsubscribe you.";
+
+			$JABBER->SendMessage($receiver, "chat", NULL, array (
+				"body" => $msg
+			));
+		}
 }
 ?>

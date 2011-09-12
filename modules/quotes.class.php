@@ -25,19 +25,19 @@ class quotes {
 			return;
 
 		if($msg == "!gbo") {
-			$msg = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
-			$msg = str_replace("\n", "", $msg);
+			$answer = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
+			$answer = str_replace("\n", "", $msg);
 		} elseif($msg == "!bash") {
-			$msg = self::get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
+			$answer = self::get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
 		} elseif($msg == "!ibash") {
-			$msg = self::get_quote_from_site("http://mobil.ibash.de/zitate.php?order=random", "<div width='100%' class='quotetable'>", "</div>");
+			$answer = self::get_quote_from_site("http://mobil.ibash.de/zitate.php?order=random", "<div width='100%' class='quotetable'>", "</div>");
 		} elseif(preg_match('/^!addquote (.*)/is', $msg, $matches)) {
 			$msg2 = trim($matches[1]);
 
 			if($msg2 != "") {
 				$fp = make_sql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_sql_escape($msg2) . "', '" . make_sql_escape($from) . "', NOW());");
 				if (make_sql_affected_rows() == 1)
-					$msg = "Successfully added!";
+					$answer = "Successfully added!";
 			}
 		} elseif($msg == "!quote") {
 			# get a random row from SQL - it's tricky!
@@ -45,11 +45,11 @@ class quotes {
 			list($offset) = make_sql_fetch_array($result, MYSQL_NUM);
 			$result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' LIMIT " . $offset . ", 1;");
 
-			list($msg) = make_sql_fetch_array($result, MYSQL_NUM);
+			list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
 		}
 
-		if (!empty($msg))
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $msg));
+		if (!empty($answer))
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 	}
 
 	private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8 = false) {

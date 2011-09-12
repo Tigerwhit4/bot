@@ -28,12 +28,4 @@
 	$online_msg = "foo";
 	$logdir = "logs";
 
-# Set to IP address of MPD server to enable
-	$mpd_host = false;
-	$mpd_port = "";
-	$mpd_passwd = "";
-
-	$rss_feeds = array();
-        $rss_receiver[0] = array();
-
 ?>

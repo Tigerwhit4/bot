@@ -147,27 +147,27 @@ class rss {
 					$users = make_sql_query("SELECT DISTINCT `jid` FROM `rss_subscriptions`;");
 					while(list($user) = make_sql_fetch_array($users, MYSQL_NUM)) {
 						$feeds = self::get_feeds_for_jid($user);
-						$msgs[] = $user . " is subscribed to the following feeds:\n" . implode("\n", $feeds);
+						$msgs[] = $user . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
 					}
 
-					$msg = implode("\n", $msgs);
+					$msg = implode("\n\n", $msgs);
 				}
 				elseif ($jid == 'all_by_feed') {
 					$msgs = array();
 					$feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
 					while(list($feed) = make_sql_fetch_array($feeds, MYSQL_NUM)) {
 						$jids = self::get_jids_for_feed($feed);
-						$msgs[] = $feed . " is subscribed by the following users:\n" . implode("\n", $jids);
+						$msgs[] = $feed . " is subscribed by the following users:\n* " . implode("\n* ", $jids);
 					}
 
-					$msg = implode("\n", $msgs);
+					$msg = implode("\n\n", $msgs);
 				}
 				else {
 					$feeds = self::get_feeds_for_jid($jid);
 					if (count($feeds) == 0)
 						$msg = $jid . " isn't subscribed to any feeds.";
 					else
-						$msg = $jid . " is subscribed to the following feeds:\n" . implode("\n", $feeds);
+						$msg = $jid . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
 				}
 			}
 

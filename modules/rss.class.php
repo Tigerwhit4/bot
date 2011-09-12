@@ -109,7 +109,7 @@ class rss {
 		$user = $from_temp[1];
 
 		if (preg_match("#^subscribe(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match)) {
-			list($jid, $url) = $match;
+			list(, $jid, $url) = $match;
 			if (!empty($jid) && !in_array($from, $trust_users))
 				return;
 
@@ -136,7 +136,7 @@ class rss {
 			));
 		}
 		elseif (preg_match("#^unsubscribe(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match)) {
-			list($jid, $url) = $match;
+			list(, $jid, $url) = $match;
 			if (!empty($jid) && !in_array($from, $trust_users))
 				return;
 

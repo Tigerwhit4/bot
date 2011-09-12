@@ -3,7 +3,7 @@ class messages {
 	private static $thread;
 
 	public static function init() {
-		self::$thread = new Thread(array('self', 'worker'));
+		self::$thread = new Thread(array(__CLASS__, 'worker'));
 		self::$thread->start();
 	}
 

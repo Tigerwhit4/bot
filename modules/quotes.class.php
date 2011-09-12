@@ -25,12 +25,12 @@ class quotes {
 			return;
 
 		if($msg == "!gbo") {
-			$msg = get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
+			$msg = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
 			$msg = str_replace("\n", "", $msg);
 		} elseif($msg == "!bash") {
-			$msg = get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
+			$msg = self::get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
 		} elseif($msg == "!ibash") {
-			$msg = get_quote_from_site("http://mobil.ibash.de/zitate.php?order=random", "<div width='100%' class='quotetable'>", "</div>");
+			$msg = self::get_quote_from_site("http://mobil.ibash.de/zitate.php?order=random", "<div width='100%' class='quotetable'>", "</div>");
 		} elseif(preg_match('/^!addquote (.*)/is', $msg, $matches)) {
 			$msg2 = trim($matches[1]);
 

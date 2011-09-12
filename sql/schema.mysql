@@ -35,5 +35,5 @@ create table if not exists `rss_subscriptions` (
   `rss_url` text collate latin1_general_ci not null,
   `jid` text collate latin1_general_ci not null,
   primary key  (`id`),
-  index `rss_url` (`rss_url`)
+  index `rss_url` (`rss_url`(255))
 ) engine=myisam  default charset=latin1 collate=latin1_general_ci;

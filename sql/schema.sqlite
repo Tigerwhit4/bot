@@ -29,3 +29,14 @@ create table if not exists 'rss_feeds' (
   'title' text not null,
   primary key  ('id')
 );
+
+create table if not exists 'rss_subscriptions' (
+  'id' int(5) not null,
+  'rss_url' text not null,
+  'jid' text no null,
+  primary key  ('id')
+);
+
+create index if not exists `rss_url` on `rss_subscriptions` (
+  `rss_url`
+);

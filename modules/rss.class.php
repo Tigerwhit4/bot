@@ -97,7 +97,6 @@ class rss {
 
 		if($timestamp)
 			return;
-	}
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = explode("/", $from);
@@ -152,5 +151,6 @@ class rss {
 				"body" => $msg
 			));
 		}
+	}
 }
 ?>

@@ -100,7 +100,7 @@ class rss {
 
 		list($from, , $msg) = split_message($message);
 
-		if (preg_match("#^((?:un)?subscribe)(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match) || preg_match("#^(list_subscriptions)(?: ([^@\s]+@[^@\s]+))?()$#", $msg, $match)) {
+		if (preg_match("#^((?:un)?subscribe)(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match) || preg_match("#^(list_subscriptions)(?: ([^@\s]+@[^@\s]+|all_by_(?:feed|user)))?()$#", $msg, $match)) {
 			list(, $cmd, $jid, $url) = $match;
 
 			if (!empty($jid) && !in_array($from, $trust_users))

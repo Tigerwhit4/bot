@@ -134,7 +134,7 @@
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = explode("/", $from, 2);
 
-		if(!in_array($from_temp[0], $rooms)) {
+		if(in_array($from_temp[0], $rooms)) {
 			$user = "";
 		} else {
 			list($from, $resource) = $from_temp;

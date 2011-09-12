@@ -126,4 +126,21 @@
 	function br2nl($string) {
 		return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
 	}
+
+	function split_message($message) {
+		global $rooms;
+
+		$from = $JABBER->GetInfoFromMessageFrom($message);
+		$from_temp = explode("/", $from, 2);
+
+		if(!in_array($from_temp[0], $rooms)) {
+			$user = "";
+		} else {
+			list($from, $resource) = $from_temp;
+		}
+
+		$msg = $JABBER->GetInfoFromMessageBody($message);
+
+		return Array($from, $resource, $message);
+	}
 ?>

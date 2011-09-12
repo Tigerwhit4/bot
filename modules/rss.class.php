@@ -98,63 +98,104 @@ class rss {
 		if($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-		$user = $from_temp[1];
+		list($from, , $msg) = split_message($message);
 
-		if (preg_match("#^subscribe(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match)) {
-			list(, $jid, $url) = $match;
+		if (preg_match("#^((?:un)?subscribe)(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match) || preg_match("#^(list_subscriptions)(?: ([^@\s]+@[^@\s]+))?()$#", $msg, $match)) {
+			list(, $cmd, $jid, $url) = $match;
+
 			if (!empty($jid) && !in_array($from, $trust_users))
 				return;
 
 			if (empty($jid))
 				$jid = $from;
 
-			switch(self::subscribe($jid, $url)) {
-				case 0:
-					$msg = "Subscription successful. To unsubscribe, send me \"unsubscribe " . (($jid != $from)? $jid . " " : "") . $url . "\"";
-					break;
-				case self::ERROR_ALREADY_SUBSCRIBED:
-					$msg = "Subscription failed: " . $jid . " are already subscribed to " . $url;
-					break;
-				case self::ERROR_NOT_A_FEED:
-					$msg = "Subscription failed: " . $url . " is not a valid feed.";
-					break;
-				default:
-					$msg = "Subscription failed.";
-					break;
+			if (strpos($jid, "/") !== false)
+				$msg = "Feed notifications don't work with via MUCs.";
+
+			elseif ($cmd == "subscribe") {
+				switch(self::subscribe($jid, $url)) {
+					case 0:
+						$msg = "Subscription successful. To unsubscribe, send me \"unsubscribe " . (($jid != $from)? $jid . " " : "") . $url . "\"";
+						break;
+					case self::ERROR_ALREADY_SUBSCRIBED:
+						$msg = "Subscription failed: " . $jid . " are already subscribed to " . $url;
+						break;
+					case self::ERROR_NOT_A_FEED:
+						$msg = "Subscription failed: " . $url . " is not a valid feed.";
+						break;
+					default:
+						$msg = "Subscription failed.";
+						break;
+				}
+			}
+			elseif ($cmd == "unsubscribe") {
+				switch(self::unsubscribe($jid, $url)) {
+					case 0:
+						$msg = "Unsubscription successful.";
+						break;
+					case self::ERROR_NOT_SUBSCRIBED:
+						$msg = "Unsubscription failed: " . $jid . " is not subscribed to " . $url;
+						break;
+					default:
+						$msg = "Unsubscription failed.";
+						break;
+				}
+			}
+			elseif ($cmd == "list_subscriptions") {
+				if ($jid == 'all_by_user') {
+					$msgs = array();
+					$users = make_sql_query("SELECT DISTINCT `jid` FROM `rss_subscriptions`;");
+					while(list($user) = make_sql_fetch_array($users, MYSQL_NUM)) {
+						$feeds = get_feeds_for_jid($user);
+						$msgs[] = $user . " is subscribed to the following feeds:\n" . implode("\n", $feeds);
+					}
+
+					$msg = implode("\n", $msgs);
+				}
+				elseif ($jid == 'all_by_feed') {
+					$msgs = array();
+					$feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
+					while(list($feed) = make_sql_fetch_array($feeds, MYSQL_NUM)) {
+						$jids = get_jids_for_feed($feed);
+						$msgs[] = $feed . " is subscribed by the following users:\n" . implode("\n", $jids);
+					}
+
+					$msg = implode("\n", $msgs);
+				}
+				else {
+					$feeds = self::get_feeds_for_jid($jid);
+					if (count($feeds) == 0)
+						$msg = $jid . " isn't subscribed to any feeds.";
+					else
+						$msg = $jid . " is subscribed to the following feeds:\n" . implode("\n", $feeds);
+				}
 			}
 
-			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => $msg
-			));
+			if (!empty($msg))
+				$JABBER->SendMessage($from, "chat", NULL, array (
+					"body" => $msg
+				));
 		}
-		elseif (preg_match("#^unsubscribe(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match)) {
-			list(, $jid, $url) = $match;
-			if (!empty($jid) && !in_array($from, $trust_users))
-				return;
+	}
 
-			if (empty($jid))
-				$jid = $from;
+	private static function get_jids_for_feed($feed) {
+		$result = make_sql_query("SELECT `jid` FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($feed) . "';");
 
-			switch(self::unsubscribe($jid, $url)) {
-				case 0:
-					$msg = "Unsubscription successful.";
-					break;
-				case self::ERROR_NOT_SUBSCRIBED:
-					$msg = "Unsubscription failed: " . $jid . " is not subscribed to " . $url;
-					break;
-				default:
-					$msg = "Unsubscription failed.";
-					break;
-			}
+		$jids = array();
+		while(list($jid) = make_sql_fetch_array($result, MYSQL_NUM))
+			$jids[] = $jid;
 
-			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => $msg
-			));
-		}
+		return $jids;
+	}
+
+	private static function get_feeds_for_jid($jid) {
+		$result = make_sql_query("SELECT `rss_url` FROM `rss_subscriptions` WHERE `jid` = '" . make_sql_escape($jid) . "';");
+
+		$feeds = array();
+		while(list($feed) = make_sql_fetch_array($result, MYSQL_NUM))
+			$feeds[] = $feed;
+
+		return $feeds;
 	}
 
 	private static function subscribe($jid, $url) {
@@ -198,11 +239,11 @@ class rss {
 	}
 
 	public static function help() {
-		return "subscribe <url> - subscribe you to the feed <url>\nunsubscribe <url>";
+		return "subscribe <url> - subscribe yourself to the feed <url> (RSS or Atom)\nunsubscribe <url> - unsubscribe yourself from the feed <url>\nlist_subscriptions - list all feeds you are subscribed to";
 	}
 
 	public static function trustHelp() {
-		return "subscribe <jid> <url> - subscribe <jid> to the feed <url>\nunsubscribe <jid> <url>";
+		return "subscribe <jid> <url> - subscribe <jid> to the feed <url>\nunsubscribe <jid> <url> - unsubscribe <jid> from the feed <url>\nlist_subscriptions <jid> - list all feeds <jid> is subscribed to\nlist_subscriptions all_by_user/all_by_feed - list all subscriptions of all users grouped by user or by feed";
 	}
 }
 ?>

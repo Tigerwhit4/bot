@@ -143,12 +143,12 @@ class rss {
 			if (empty($jid))
 				$jid = $from;
 
-			switch(self::unsubscribe($from, $url)) {
+			switch(self::unsubscribe($jid, $url)) {
 				case 0:
 					$msg = "Unsubscription successful.";
 					break;
 				case self::ERROR_NOT_SUBSCRIBED:
-					$msg = "Unsubscription failed: You are not subscribed to " . $url;
+					$msg = "Unsubscription failed: " . $jid . " is not subscribed to " . $url;
 					break;
 				default:
 					$msg = "Unsubscription failed.";

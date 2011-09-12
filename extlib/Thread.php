@@ -103,7 +103,7 @@ class Thread {
      * @return boolean
      */
     public static function runnableOk( $_runnable ) {
-        return ( function_exists( $_runnable ) && is_callable( $_runnable ) );
+        return is_callable( $_runnable );
     }
     
     /**

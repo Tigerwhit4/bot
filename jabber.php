@@ -17,9 +17,6 @@ require "extlib/Thread.php";
 require "extlib/functions.php";
 require "extlib/simplepie/simplepie.inc";
 
-require "threads/fritzbox_thread.php";
-require "threads/message_thread.php";
-
 if (!Thread :: available())
 	die("Threads not supported\n");
 
@@ -38,6 +35,8 @@ $modules_groupchat = array ();
 $modules_chat = array ();
 $modules_normal = array ();
 $modules_cron = array ();
+$modules_init = array ();
+$modules_shutdown = array ();
 
 $topic = array ();
 $trust_users = array ();
@@ -61,6 +60,12 @@ while ($file = readdir($handle)) {
 
 		if ($reflector->hasMethod("cron"))
 			array_push($modules_cron, $modul_name);
+
+		if ($reflector->hasMethod("init"))
+			array_push($modules_init, $modul_name);
+
+		if ($reflector->hasMethod("shutdown"))
+			array_push($modules_shutdown, $modul_name);
 	}
 }
 
@@ -166,7 +171,7 @@ function Handler_message_groupchat($message) {
 	global $modules_groupchat;
 
 	foreach ($modules_groupchat as $modul_name)
-		eval ($modul_name . '::groupchat($message);');
+		call_user_func_array(array($modul_name, 'groupchat'), array($message));
 }
 
 function Handler_message_normal($message) {
@@ -180,7 +185,7 @@ function Handler_message_normal($message) {
 		return;
 
 	foreach ($modules_normal as $modul_name)
-		eval ($modul_name . '::normal($message);');
+		call_user_func_array(array($modul_name, 'normal'), array($message));
 }
 
 function Handler_message_chat($message) {
@@ -194,32 +199,25 @@ function Handler_message_chat($message) {
 		return;
 
 	foreach ($modules_chat as $modul_name)
-		eval ($modul_name . '::chat($message);');
+		call_user_func_array(array($modul_name, 'chat'), array($message));
 }
 
-$fritzbox_thread = new Thread('fritzbox_cruiser');
-
-$fritzbox_thread->start(10, 'fritzbox_thread');
-
-$message_thread = new Thread('message_fetcher');
-$message_thread->start(10, 'message_thread');
+foreach ($modules_chat as $modul_name)
+	call_user_func(array($modul_name, 'init'));
 
 $i = 0;
 while ($JABBER->CruiseControl(1)) {
 	$i++;
 
 	foreach ($modules_cron as $modul_name)
-		eval ($modul_name . '::cron($i);');
+		call_user_func_array(array($modul_name, 'chat'), array($i));
 }
 
 // cleanup status table
 make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
-if ($fritzbox_thread->isAlive())
-	$fritzbox_thread->stop();
-
-if ($message_thread->isAlive())
-	$message_thread->stop();
+foreach ($modules_chat as $modul_name)
+	call_user_func(array($modul_name, 'shutdown'));
 
 $JABBER->Disconnect();
 @ sql_close($sql_connection);

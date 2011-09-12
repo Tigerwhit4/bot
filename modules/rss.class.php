@@ -107,7 +107,7 @@ class rss {
 		if (preg_match("#^subscribe https?://#", $msg)) {
 			list(, $url) = explode(' ', $msg, 2);
 
-			$result = make_sql_num_query("SELECT * FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($from) . "' AND `jid` = '" . make_sql_escape($from) . "';");
+			$result = make_sql_num_query("SELECT * FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($url) . "' AND `jid` = '" . make_sql_escape($from) . "';");
 			if ($result > 0)
 				$msg = "You are already subscribed to " . $url;
 			else {

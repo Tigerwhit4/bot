@@ -2,7 +2,6 @@
 	$error_reporting = false;
 
 	$trusted_users = array();
-	$check_hosts = array();
 
 	$sql_type = "sqlite";
 	$sql_host = "localhost";

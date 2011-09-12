@@ -52,7 +52,7 @@ class quotes {
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $msg));
 	}
 
-	private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8) {
+	private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8 = false) {
 		$inputfile = file_get_contents($url);
 		$temp = extractstring($inputfile, $starttoken, $endtoken);
 		$temp = strip_tags($temp);

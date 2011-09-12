@@ -116,15 +116,11 @@
 	}
 
 	function extractstring($str, $start, $end) {
-		$str_low = strtolower($str);
-		$pos_start = strpos($str_low, $start);
-		$pos_end = strpos($str_low, $end, ($pos_start + strlen($start)));
+		$str = stristr($str, $start);
+		$str = substr($str, strlen($start));
+		$str = stristr($str, $end, true);
 
-		if (($pos_start !== false) && ($pos_end !== false)) {
-			$pos1 = $pos_start + strlen($start);
-			$pos2 = $pos_end - $pos1;
-			return substr($str, $pos1, $pos2);
-		}
+		return $str;
 	}
 
 	function br2nl($string) {

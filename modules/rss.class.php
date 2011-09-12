@@ -113,21 +113,25 @@ class rss {
 			else {
 				$feed = new SimplePie();
 				$feed->set_feed_url($url);
-				$feed->init();
-				$feed->handle_content_type();
-				if($feed->get_type() & SIMPLEPIE_TYPE_ALL) {
-					# feed is valid and supported
-					make_sql_query("INSERT INTO `rss_subscriptions` (`rss_url`, `jid`) VALUES ('" . make_sql_escape($url) . "', '" . make_sql_escape($from) . "');");
-					if(make_sql_affected_rows() == 1)
-						$msg = "You have been successfully subscribed to " . $url . ". To unsubscribe, send me\nunsubscribe " . $url;
+				$feed->enable_cache(false);
+				if ($feed->init()) {
+					$feed->handle_content_type();
+					if($feed->get_type() & SIMPLEPIE_TYPE_ALL) {
+						# feed is valid and supported
+						make_sql_query("INSERT INTO `rss_subscriptions` (`rss_url`, `jid`) VALUES ('" . make_sql_escape($url) . "', '" . make_sql_escape($from) . "');");
+						if(make_sql_affected_rows() == 1)
+							$msg = "You have been successfully subscribed to " . $url . ". To unsubscribe, send me\nunsubscribe " . $url;
+						else
+							$msg = "Sorry, subscribing you to " . $url . " failed.";
+					}
 					else
-						$msg = "Sorry, subscribing you to " . $url . " failed.";
+						$msg = $url . " is not a valid feed!";
 				}
 				else
-					$msg = $url . " is not a valid feed!";
+					$msg = "Errors retrieving " . $url;
 			}
 
-			$JABBER->SendMessage($receiver, "chat", NULL, array (
+			$JABBER->SendMessage($from, "chat", NULL, array (
 				"body" => $msg
 			));
 		}
@@ -147,7 +151,7 @@ class rss {
 			} else
 				$msg = "You are not subscribed to " . $url . ", thus I can't unsubscribe you.";
 
-			$JABBER->SendMessage($receiver, "chat", NULL, array (
+			$JABBER->SendMessage($from, "chat", NULL, array (
 				"body" => $msg
 			));
 		}

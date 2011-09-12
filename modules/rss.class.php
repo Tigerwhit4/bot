@@ -198,11 +198,11 @@ class rss {
 	}
 
 	public static function help() {
-		return "subscribe <url> - subscribe you to the feed <url>";
+		return "subscribe <url> - subscribe you to the feed <url>\nunsubscribe <url>";
 	}
 
 	public static function trustHelp() {
-		return "subscribe <jid> <url> - subscribe <jid> to the feed <url>";
+		return "subscribe <jid> <url> - subscribe <jid> to the feed <url>\nunsubscribe <jid> <url>";
 	}
 }
 ?>

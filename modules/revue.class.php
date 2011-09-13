@@ -30,15 +30,15 @@ class revue {
 			revue::$revues[$from][rand(0, 9)] = array("time" => time(), "user" => $user, "msg" => $msg);
 
 		if(preg_match("/^\!revue$/i", $msg)) {
-			$temp = "";
+			$answer = "";
 			foreach(revue::$revues[$from] as $revue) {
-				if($temp != "") $temp .= "\n";
-				$temp .= $revue["user"] . ": " . $revue["msg"];
+				if($answer != "") $answer .= "\n";
+				$answer .= $revue["user"] . ": " . $revue["msg"];
 			}
 
 
-			if($temp != "")
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $temp));
+			if($answer != "")
+				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 		}
 	}
 

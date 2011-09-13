@@ -36,16 +36,16 @@ class wetter {
 
 			$result = wetter :: google_weather($query);
 			if ($result)
-				$temp = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
+				$answer = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
 			else
-				$temp = "Nicht verfügbar.";
+				$answer = "Nicht verfügbar.";
 			
-			$temp = strip_tags($temp);
-			$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
-			$temp = trim($temp);
+			$answer = strip_tags($answer);
+			$answer = html_entity_decode($answer, ENT_COMPAT, 'UTF-8');
+			$answer = trim($answer);
 
 			$JABBER->SendMessage($from, "groupchat", NULL, array (
-				"body" => $temp
+				"body" => $answer
 			));
 		}
 	}
@@ -70,16 +70,16 @@ class wetter {
 
 			$result = wetter :: google_weather($query);
 			if ($result)
-				$temp = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
+				$answer = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
 			else
-				$temp = "Nicht verfügbar.";
+				$answer = "Nicht verfügbar.";
 			
-			$temp = strip_tags($temp);
-			$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
-			$temp = trim($temp);
+			$answer = strip_tags($answer);
+			$answer = html_entity_decode($answer, ENT_COMPAT, 'UTF-8');
+			$answer = trim($answer);
 
 			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => $temp
+				"body" => $answer
 			));
 		}
 	}

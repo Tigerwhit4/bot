@@ -23,40 +23,38 @@ class config {
 			return;
 
 		if (preg_match("/^config (set|get|del|list) (.*)$/mi", $msg, $matches)) {
-			$return = "ERR.";
+			$answer = "ERR.";
 
 			if ($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/mi", $matches[2], $submatches)) {
 				set_config($submatches[1], $submatches[2]);
 
 				if (get_config($submatches[1]) == $submatches[2])
-					$return = "ok.";
+					$answer = "ok.";
 				else
-					$return = "ERR.";
+					$answer = "ERR.";
 			} elseif ($matches[1] == "get") {
-				$return = get_config($matches[2]);
+				$answer = get_config($matches[2]);
 
-				if ($return == "")
-					$return = "-ENOENTRY";
+				if ($answer == "")
+					$answer = "-ENOENTRY";
 			} elseif ($matches[1] == "del") {
 				del_config($matches[2]);
 				if (get_config($matches[2]) == "")
-					$return = "deleted";
+					$answer = "deleted";
 			}
 		} elseif (preg_match("/^config rehash$/i", $msg)) {
 			$config = array();
-			$return = "ok.";
+			$answer = "ok.";
 		} elseif (preg_match("/^config list$/i", $msg)) {
-			$return = "actual config:\n";
+			$answer = "actual config:\n";
 			$result = make_sql_query("SELECT * FROM `config` ORDER BY `name`;");
 			while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
-				$return .= $row['name'] . ": " . $row['value'] . "\n";
+				$answer .= $row['name'] . ": " . $row['value'] . "\n";
 			}
 		}
 
-                if (!empty($return))
-                        $JABBER->SendMessage($from, "chat", NULL, array (
-                            "body" => $return
-                        ));
+                if (!empty($answer))
+                        $JABBER->SendMessage($from, "chat", NULL, array ("body" => $answer));
 	}
 
 	public static function trustHelp() {

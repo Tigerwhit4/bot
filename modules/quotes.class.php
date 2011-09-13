@@ -28,10 +28,10 @@ class quotes {
 		} elseif($msg == "!ibash") {
 			$answer = self::get_quote_from_site("http://mobil.ibash.de/zitate.php?order=random", "<div width='100%' class='quotetable'>", "</div>");
 		} elseif(preg_match('/^!addquote (.*)/is', $msg, $matches)) {
-			$msg2 = trim($matches[1]);
+			$new_quote = trim($matches[1]);
 
-			if($msg2 != "") {
-				$fp = make_sql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_sql_escape($msg2) . "', '" . make_sql_escape($from) . "', NOW());");
+			if($new_quote != "") {
+				$fp = make_sql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_sql_escape($new_quote) . "', '" . make_sql_escape($from) . "', NOW());");
 				if (make_sql_affected_rows() == 1)
 					$answer = "Successfully added!";
 			}

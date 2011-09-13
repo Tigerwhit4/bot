@@ -30,17 +30,19 @@ class rechner {
 				$url = "http://www.google.de/search?q=" . urlencode($match);
 	
 				$inputfile = file_get_contents($url);
-				$temp = extractstring($inputfile, '<h2 class=r style="font-size:138%"><b>', '</b></h2>');
+				$answer = extractstring($inputfile, '<h2 class=r style="font-size:138%"><b>', '</b></h2>');
 				
-				$temp = str_replace('<sup>', '^', $temp);
-				$temp = strip_tags($temp);
-				$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
-				$temp = str_replace("\n", "", $temp);
-				$temp = str_replace("Â", "", $temp);
-				$temp = trim($temp);
+				$answer = str_replace('<sup>', '^', $answer);
+				$answer = strip_tags($answer);
+				$answer = html_entity_decode($answer, ENT_COMPAT, 'UTF-8');
+				$answer = str_replace("\n", "", $answer);
+				$answer = str_replace("Â", "", $answer);
+				$answer = trim($answer);
 
-				if($temp == "") $temp = "42";
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $temp));
+				if($answer == "")
+					$answer = "42";
+
+				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 			} else {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => '42'));
 			}

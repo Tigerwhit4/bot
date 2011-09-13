@@ -25,21 +25,21 @@ class numbers {
 			return;
 
 		if($msg == "!date") {
-			$date = date("d.m.Y W.") . " Woche " . date("H:i:s");
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $date));
+			$answer = date("d.m.Y W.") . " Woche " . date("H:i:s");
 		} elseif($msg == "!pi") {
 			$prec_for = ini_get("precision");
 			ini_set("precision", "50");
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => pi()));
+			$answer = pi();
 			ini_set("precision", $prec_for);
 		} elseif($msg == "!number") {
-			$number = "";
+			$answer = "";
 
-			while(strlen($number) != 10)
-				$number .= zufallszahl(0, 9);
-
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $number));
+			while(strlen($answer) != 10)
+				$answer .= zufallszahl(0, 9);
 		}
+
+		if (!empty($answer))
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 	}
 
 	public static function help() {

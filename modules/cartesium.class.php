@@ -32,18 +32,19 @@ class cartesium {
 
 				preg_match_all('/\<tr\>\<td\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<td align=right\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info);
 				preg_match_all('/\<tr\>\<td\>\<div class="temp"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info2);
-				$msg = "";
+
+				$answer = "";
 
 				foreach($info[2] as $key=>$inf)
-					$msg .= html_entity_decode(trim($inf), ENT_COMPAT, "UTF-8") . ": " . html_entity_decode(trim($info[4][$key]), ENT_COMPAT, "UTF-8") . "\n";
+					$answer .= html_entity_decode(trim($inf), ENT_COMPAT, "UTF-8") . ": " . html_entity_decode(trim($info[4][$key]), ENT_COMPAT, "UTF-8") . "\n";
 
 				if($info2[1][1] != "")
-					$msg .= $info2[1][1] . "\n";
+					$answer .= $info2[1][1] . "\n";
 
-				if($msg == "")
-					$msg = "error fetching data";
+				if(empty($answer))
+					$answer = "error fetching data";
 
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($msg)));
+				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
 		}
 	}
 

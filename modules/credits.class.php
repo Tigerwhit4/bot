@@ -23,14 +23,14 @@ class credits {
 			return;
 
 		if($msg == "!credits") {
-				$msg = "my founder was helios <helios@planetcyborg.de>\n";
-				$msg .= "msquare added a lot of code and therefor he is my co-founder\n";
-				$msg .= "---\n";
-				$msg .= "helios: !mensa, !gw2, !hsmensa, !topic, !stream, !moo, !addquote, !quote, !gbo, !bash, !ddate, !pi, !date, !number, !checkaps, !fortune, !youporn\n";
-				$msg .= "jix: !google, !wikipedia\n";
-				$msg .= "msquare: !ticket, !tabu, !wetter, !revue, !rechner\n";
+				$answer = "my founder was helios <helios@planetcyborg.de>\n";
+				$answer .= "msquare added a lot of code and therefor he is my co-founder\n";
+				$answer .= "---\n";
+				$answer .= "helios: !mensa, !gw2, !hsmensa, !topic, !stream, !moo, !addquote, !quote, !gbo, !bash, !ddate, !pi, !date, !number, !checkaps, !fortune, !youporn\n";
+				$answer .= "msquare: !ticket, !tabu, !wetter, !revue, !rechner\n";
+				$answer .= "jplitza: RSS subscription\n";
 
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($msg)));
+				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
 			}
 	}
 

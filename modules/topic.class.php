@@ -31,17 +31,17 @@ class topic {
 			return;
 
 		if(preg_match('/^!topic (.*)/i', $msg, $matches)) {
-			$msg2 = trim($matches[1]);
+			$newtopic = trim($matches[1]);
 
-			if($msg2 != "") {
-				if($msg2 == "-clean") {
-					$msg2 = "";
+			if($newtopic != "") {
+				if($newtopic == "-clean") {
+					$newtopic = "";
 					$topic[$from] = "";
 				} elseif($topic[$from] != "")
-					$msg2 = $msg2 . " | " . $topic[$from];
+					$newtopic = $newtopic . " | " . $topic[$from];
 			}
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("subject" => $msg2));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("subject" => $newtopic));
 		}
 	}
 

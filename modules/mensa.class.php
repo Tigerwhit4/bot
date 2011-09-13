@@ -55,25 +55,25 @@ class mensa {
 				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<ul\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<\/ul\>/iU', $content, $auflauf);
 				preg_match_all('/\<h3\>Beilagen\<\/h3\>\n\<ul\>\n(.*)\n\<\/ul\>/iUs', $content, $beilagen);
 
-				$msg = "";
+				$answer = "";
 
 				foreach($matches[1] as $key=>$essen)
-					$msg .= $essen . ": " . $matches[2][$key] . "\n";
+					$answer .= $essen . ": " . $matches[2][$key] . "\n";
 
 				if(is_array($auflauf) && isset($auflauf[1][0]) && $auflauf[1][0] == "Aufläufe")
-					$msg .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
+					$answer .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
 
 				if(is_array($beilagen) && isset($beilagen[1][0]))
-                                        $msg2 .= "Beilagen: ";
+                                        $answer .= "Beilagen: ";
 
-				foreach(explode("\n", $beilagen[1][0]) as $bei)
-					$msg2 .= strip_tags($bei) . "; ";
+				foreach(explode("\n", $beilagen[1][0]) as $beilagen_line)
+					$answer .= strip_tags($beilagen_line) . "; ";
 
-				$msg .= trim($msg2, "; ");
+				$answer .= trim($answer, "; ");
 			} else
-				$msg = strip_tags($content);
+				$answer = strip_tags($content);
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($msg)));
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
 		}
 	}
 

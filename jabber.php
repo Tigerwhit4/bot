@@ -1,12 +1,13 @@
 #!/usr/bin/php
 <?php
-$config = array ();
+$config = array();
 
 require "config.php";
 
 if ($sql_type == "mysql")
 	require "extlib/dbabstraction/mysql.php";
-elseif ($sql_type == "sqlite") require "extlib/dbabstraction/sqlite.php";
+elseif ($sql_type == "sqlite")
+	require "extlib/dbabstraction/sqlite.php";
 else
 	die("Please select a sql_type");
 
@@ -30,15 +31,15 @@ if (!$error_reporting)
 
 $logday = "";
 
-$modules_groupchat = array ();
-$modules_chat = array ();
-$modules_normal = array ();
-$modules_cron = array ();
-$modules_init = array ();
-$modules_shutdown = array ();
+$modules_groupchat = array();
+$modules_chat = array();
+$modules_normal = array();
+$modules_cron = array();
+$modules_init = array();
+$modules_shutdown = array();
 
-$topic = array ();
-$trust_users = array ();
+$topic = array();
+$trust_users = array();
 
 $handle = opendir("modules/");
 
@@ -219,6 +220,6 @@ foreach ($modules_shutdown as $modul_name)
 	call_user_func(array($modul_name, 'shutdown'));
 
 $JABBER->Disconnect();
-@ sql_close($sql_connection);
+@sql_close($sql_connection);
 die("");
 ?>

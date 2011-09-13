@@ -21,33 +21,31 @@ class foobar {
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		// keine eigenen Aussagen interpretieren
 		if($JABBER->username == $user)
 			return;
 
 		if(preg_match('/^!moo (.*)/i', $msg, $matches)) {
-			$msg2 = $matches[1];
-
-			if($msg2 == $JABBER->username)
-				$numsg = "fuck you!";
-			elseif($msg2 == $user)
-				$numsg = "moo at yourself...";
+			if($matches[1] == $JABBER->username)
+				$answer = "fuck you!";
+			elseif($matches[1] == $user)
+				$answer = "moo at yourself...";
 			else
-				$numsg = "i moo at you, " . $msg2;
-
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $numsg));
+				$answer = "i moo at you, " . $matches[1];
 		} elseif(preg_match('/^!rev (.*)/i', $msg, $matches))
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode(strrev(utf8_decode($matches[1])))));
+			$answer = utf8_encode(strrev(utf8_decode($matches[1])));
 		elseif($msg == "cow")
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "moo!"));
+			$anwer = "moo!";
 		elseif($msg == "badger badger badger badger badger badger badger badger badger badger badger badger")
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "mushroom mushroom!"));
+			$answer = "mushroom mushroom!";
 		elseif($msg == "snake")
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Ah snake a snake! Snake, a snake! Ooooh, it's a snake!"));
+			$answer = "Ah snake a snake! Snake, a snake! Ooooh, it's a snake!";
 		elseif($msg == "moo?")
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "To moo, or not to moo, that is the question. Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fish..."));
+			$answer = "To moo, or not to moo, that is the question. Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fish...";
 		elseif($msg == "martian")
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Don't run! We are your friends!"));
+			$answer = "Don't run! We are your friends!";
+
+		if (!empty($answer))
+			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 	}
 
 	public static function help() {

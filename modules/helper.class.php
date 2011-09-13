@@ -51,10 +51,7 @@ class helper {
 		global $trust_users;
 		global $modules_chat;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = explode("/", $from);
-		$from = $from[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
+		list($from, , $msg) = split_message($message);
 
 		if($msg == "help") {
 			$help = $JABBER->username . " knows these commands:\n";

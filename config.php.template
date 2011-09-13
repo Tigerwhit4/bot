@@ -14,8 +14,6 @@
 	$jabber_username = "jabberuser";
 	$jabber_password = "jabberpw";
 
-	$greetings = array();
-
 	$jabber_version_name = "foobot";
 	$jabber_version_version = "0.01";
 	$jabber_version_os = "funix";
@@ -26,5 +24,4 @@
 
 	$online_msg = "foo";
 	$logdir = "logs";
-
 ?>

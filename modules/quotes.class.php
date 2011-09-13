@@ -22,7 +22,7 @@ class quotes {
 
 		if($msg == "!gbo") {
 			$answer = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
-			$answer = str_replace("\n", "", $msg);
+			$answer = str_replace("\n", "", $answer);
 		} elseif($msg == "!bash") {
 			$answer = self::get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
 		} elseif($msg == "!ibash") {

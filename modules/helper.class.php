@@ -17,11 +17,7 @@ class helper {
 		if($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-		$user = $from_temp[1];
+		list($from, $user, $msg) = split_message($message);
 
 		if($JABBER->username == $user)
 			return;

@@ -15,11 +15,7 @@ class wetter {
 		if ($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-		$user = $from_temp[1];
+		list($from, $user, $msg) = split_message($message);
 
 		if ($JABBER->username == $user)
 			return;
@@ -53,10 +49,7 @@ class wetter {
 	public static function chat($message) {
 		global $JABBER;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = explode("/", $from);
-		$from = $from[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
+		list($from, , $msg) = split_message($message);
 
 		if (preg_match("/^wetter/i", $msg)) {
 			if (preg_match("/^wetter ([a-zäüöß0-9 -]*)$/i", $msg, $matches)) {

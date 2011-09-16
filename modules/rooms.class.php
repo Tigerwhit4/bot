@@ -16,10 +16,7 @@ class rooms {
 		if($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
+		list($from, , $msg) = split_message($message);
 
 		if(array_key_exists("#", $message["message"])) {
 			$invitearr = $message["message"]["#"];
@@ -75,11 +72,7 @@ class rooms {
 		if($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-		$user = $from_temp[1];
+		list($from, , $msg) = split_message($message);
 
 		if(!in_array($from, $trust_users))
 			return;

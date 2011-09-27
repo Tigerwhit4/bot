@@ -14,20 +14,20 @@ class messages {
 		while (true) {
 			if(!($socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP)))
 				die('socket_create() failed: ' . socket_strerror(socket_last_error()));
-			if(!socket_bind($socket, 0, self::$port))
+			if(!socket_bind($socket, '::', self::$port))
 				die('socket_bind() failed: ' . socket_strerror(socket_last_error($socket)));
 			if(!socket_listen($socket))
 				die('socket_listen() failed: ' . socket_strerror(socket_last_error($socket)));
 
 			while ($client = socket_accept($socket)) {
 				$clientaddress = "";
-				socket_getpeername($socket, $clientaddress);
-				$token = socket_read($client, 128, PHP_NORMAL_READ);
-				$tokens = json_decode(get_config('message_tokens'));
+				socket_getpeername($client, $clientaddress);
+				$token = trim(socket_read($client, 128, PHP_NORMAL_READ));
+				$tokens = json_decode(get_config('message_tokens'), true);
 
 				if ($token == $tokens[$clientaddress]) {
-					while($msg = socket_read($client, 1024, PHP_NORMAL_READ) && !empty($msg)) {
-						preg_match('/^"(.*?)" "(.*?)"(?: "(.*)")?$/i', $msg, $matches);
+					while(($msg = socket_read($client, 1024, PHP_NORMAL_READ)) && !empty($msg)) {
+						preg_match('/^"(.*?)" "(.*?)"(?: "(.*)")?\s*$/i', $msg, $matches);
 						if(preg_match('/^[0-9a-zA-Z_-]*@[0-9a-zA-Z_.-]*$/i', $matches[1])) {
 							if(isset($matches[3]) && $matches[3] == "muc")
 								$JABBER->SendMessage($matches[1], "groupchat", NULL, array("body" => rtrim(utf8_encode($matches[2]))));

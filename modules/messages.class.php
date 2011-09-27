@@ -26,7 +26,7 @@ class messages {
 				$tokens = json_decode(get_config('message_tokens'), true);
 
 				if ($token == $tokens[$clientaddress]) {
-					while(($msg = socket_read($client, 1024, PHP_NORMAL_READ)) && !empty($msg)) {
+					while(($msg = @socket_read($client, 1024, PHP_NORMAL_READ)) && !empty($msg)) {
 						preg_match('/^"(.*?)" "(.*?)"(?: "(.*)")?\s*$/i', $msg, $matches);
 						if(preg_match('/^[0-9a-zA-Z_-]*@[0-9a-zA-Z_.-]*$/i', $matches[1])) {
 							if(isset($matches[3]) && $matches[3] == "muc")

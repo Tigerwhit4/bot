@@ -43,9 +43,9 @@ class messages {
 						preg_match('/^"(.*?)" "(.*?)"(?: "(.*)")?\s*$/i', $msg, $matches);
 						if(preg_match('/^[0-9a-zA-Z_-]*@[0-9a-zA-Z_.-]*$/i', $matches[1])) {
 							if(isset($matches[3]) && $matches[3] == "muc")
-								$JABBER->SendMessage($matches[1], "groupchat", NULL, array("body" => rtrim(utf8_encode($matches[2]))));
+								$JABBER->SendMessage($matches[1], "groupchat", NULL, array("body" => rtrim($matches[2])));
 							else
-								$JABBER->SendMessage($matches[1], "chat", NULL, array("body" => rtrim(utf8_encode($matches[2]))));
+								$JABBER->SendMessage($matches[1], "chat", NULL, array("body" => rtrim($matches[2])));
 						}
 					}
 				}

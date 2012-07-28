@@ -23,6 +23,8 @@ class quotes {
 		if($msg == "!gbo") {
 			$answer = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
 			$answer = str_replace("\n", "", $answer);
+		} elseif($msg == "!politbash") {
+			$answer = self::get_quote_from_site("http://polit-bash.org/index.php?p=random", "<p class=\"quote\">", "</p>", false, true);
 		} elseif($msg == "!bash")
 			$answer = self::get_quote_from_site("http://bash.org/?random", "<p class=\"qt\">", "</p>");
 		elseif($msg == "!ibash")
@@ -48,9 +50,13 @@ class quotes {
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 	}
 
-	private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8 = false) {
+	private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8 = false, $politbash = false) {
 		$inputfile = file_get_contents($url);
 		$temp = extractstring($inputfile, $starttoken, $endtoken);
+
+		if($politbash)
+			$temp = extractstring($temp, "<br />", "<br /><br />");
+
 		$temp = strip_tags($temp);
 		$temp = html_entity_decode($temp, ENT_COMPAT, $source_is_utf8 ? 'UTF-8' : 'ISO-8859-1');
 		$temp = str_replace("\n", "", $temp);

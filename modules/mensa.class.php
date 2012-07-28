@@ -20,7 +20,7 @@ class mensa {
 		if($JABBER->username == $user)
 			return;
 
-		if(preg_match('/^!(mensa|gw2|hsmensa)(\s+(.*))?$/i', $msg, $matches)) {
+		if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
 			$time = date("G");
 			$matches[2] = trim($matches[2]);
 
@@ -33,6 +33,9 @@ class mensa {
 					break;
 				case "hsmensa":
 					$url = "https://mortzu.de/hsmensa/";
+					break;
+				case "hsair":
+					$url = "https://mortzu.de/hsair/";
 					break;
 			}
 
@@ -75,7 +78,7 @@ class mensa {
 	}
 
 	public static function help() {
-		return "!mensa o. !gw2 o. !hsmensa <tomorrow> - outputs meal. after 2pm outputs meal for tomorrow; also with parameter tomorrow.";
+		return "!mensa o. !gw2 o. !hsmensa o. !hsair <tomorrow> - outputs meal. after 2pm outputs meal for tomorrow; also with parameter tomorrow.";
 	}
 
 }

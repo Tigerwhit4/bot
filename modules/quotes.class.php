@@ -37,6 +37,17 @@ class quotes {
 				if (make_sql_affected_rows() == 1)
 					$answer = "Successfully added!";
 			}
+		} elseif(preg_match('/^!quote (.*)/is', $msg, $matches)) {
+			if(is_numeric($matches[1])) {
+				$result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' AND `id` = '" . make_sql_escape($matches[1]) . "';");
+				list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
+			} else {
+				$answer = "";
+				$result = make_sql_query("SELECT `id` FROM `quotes` WHERE MATCH(content) AGAINST ('" . make_sql_escape($matches[1]) . "') AND `channel` = '" . make_sql_escape($from) . "';");
+				while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
+					$answer .= "#" . $row['id'] . " ";
+				}
+			}
 		} elseif($msg == "!quote") {
 			// get a random row from SQL - it's tricky!
 			$result = make_sql_query("SELECT FLOOR(RAND() * COUNT(*)) FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "';");

@@ -21,21 +21,9 @@ class cartesium {
 			return;
 
 		if($msg == "!cartesium") {
-				$ch = curl_init("https://smartenergy.uni-bremen.de/yoda/");
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				$json = curl_exec($ch);
-				curl_close($ch);
+				$json_in = get_url("http://act.informatik.uni-bremen.de/weather");
 
-				preg_match_all('/\<tr\>\<td\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<td align=right\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info);
-				preg_match_all('/\<tr\>\<td\>\<div class="temp"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info2);
-
-				$answer = "";
-
-				foreach($info[2] as $key=>$inf)
-					$answer .= html_entity_decode(trim($inf), ENT_COMPAT, "UTF-8") . ": " . html_entity_decode(trim($info[4][$key]), ENT_COMPAT, "UTF-8") . "\n";
-
-				if(!empty($info2[1][1]))
-					$answer .= $info2[1][1] . "\n";
+				$answer = html_entity_decode(trim($json_in), ENT_COMPAT, "UTF-8");
 
 				if(empty($answer))
 					$answer = "error fetching data";

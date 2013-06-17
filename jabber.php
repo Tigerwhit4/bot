@@ -164,6 +164,7 @@ function Handler_presence_subscribe($message) {
 
 function Handler_message_groupchat($message) {
   global $modules_groupchat;
+  global $JABBER;
 
   $i = 0;
   $timestamp = "";
@@ -181,8 +182,14 @@ function Handler_message_groupchat($message) {
   if($JABBER->username == $user)
     return;
 
-  foreach ($modules_groupchat as $modul_name)
-    call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
+  foreach ($modules_groupchat as $modul_name) {
+    $answer = call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
+
+    if(!empty($answer))
+      $JABBER->SendMessage($from, "groupchat", NULL, array ("body" => $answer));
+
+    unset($answer);
+  }
 }
 
 function Handler_message_normal($message) {
@@ -194,8 +201,14 @@ function Handler_message_normal($message) {
   if ($from == $JABBER->username . "@" . $JABBER->server)
     return;
 
-  foreach ($modules_normal as $modul_name)
-    call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
+  foreach ($modules_normal as $modul_name) {
+    $answer = call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
+
+    if(!empty($answer))
+      $JABBER->SendMessage($from . '/' . $resource, "normal", NULL, array ("body" => $answer));
+
+    unset($answer);
+  }
 }
 
 function Handler_message_chat($message) {
@@ -207,8 +220,14 @@ function Handler_message_chat($message) {
   if ($from == $JABBER->username . "@" . $JABBER->server)
     return;
 
-  foreach ($modules_chat as $modul_name)
-    call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
+  foreach ($modules_chat as $modul_name) {
+    $answer = call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
+
+    if(!empty($answer))
+      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array ("body" => $answer));
+
+    unset($answer);
+  }
 }
 
 foreach ($modules_init as $modul_name)

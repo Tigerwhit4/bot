@@ -32,11 +32,11 @@ class wetter {
 		if(preg_match("/^\!wetter/i", $msg)) {
 			if(preg_match("/^\!wetter ([a-zäüöß0-9 -]*)$/i", $msg, $matches)){
 				if(intval($matches[1]) == 0)
-					$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+" . urlencode($matches[1]);
+					$url = "http://www.google.de/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+" . urlencode($matches[1]);
 				else
-					$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+" . urlencode($matches[1]) . "+deutschland";
+					$url = "http://www.google.de/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+" . urlencode($matches[1]) . "+deutschland";
 			}else{
-				$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+bremen";
+				$url = "http://www.google.de/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+bremen";
 			}
 			$inputfile = file_get_contents($url);
 			$head = extractstring($inputfile, '<div style="padding:5px 5px 5px 0;float:left">', '</div>');

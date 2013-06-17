@@ -25,12 +25,12 @@ class kick {
 		global $trust_users;
 		global $rooms;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = explode("/", $from);
-		$from = $from[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
+		list($from, , $msg) = split_message($message);
 
-		if((preg_match("/^kick ([^:]*):(.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if (!in_array($from, $trust_users))
+			return;
+
+		if(preg_match("/^kick ([^:]*):(.*)$/i", $msg, $matches)) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];
@@ -42,12 +42,11 @@ class kick {
 					$packet .= "</query>";
 					$packet .= "</iq>";
 					$JABBER->SendPacket($packet);
-					// return;
 				}
 			}
 		}
 
-		if((preg_match("/^kickr (.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if(preg_match("/^kickr (.*)$/i", $msg, $matches)) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];

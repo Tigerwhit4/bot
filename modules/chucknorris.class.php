@@ -6,23 +6,21 @@ class chucknorris {
 		global $trust_users;
 		global $rooms;
 		
+		list($from, , $msg) = split_message($message);
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = explode("/", $from);
-		$from = $from[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
+		if (!in_array($from, $trust_users))
+			return;
 
-		if((preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) && (in_array($from, $trust_users))) {
+		if(preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) {
 			foreach($rooms as $room) {
 				$room_temp = explode('@', $room);
-				$room_temp = $room_temp[0];
 
-				if($matches[1] == $room_temp) {
+				if($matches[1] == $room_temp[0]) {
 					$JABBER->sendMessage($room, "groupchat", NULL, array("body" => $matches[2]));
 					return;
 				}
 			}
-		} elseif(($msg == "die") && (in_array($from, $trust_users))) {
+		} elseif($msg == "die") {
 			$JABBER->Disconnect();
 			die("Sent to death by " . $from . "\n");
 		}

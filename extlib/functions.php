@@ -58,6 +58,7 @@ function get_url($url, $disable_v6 = false) {
   if (function_exists("curl_init")) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, ini_get('user_agent'));
 
     if($disable_v6 == true)
       curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);

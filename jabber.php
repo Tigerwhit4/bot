@@ -4,10 +4,8 @@ $config = array();
 
 require "config.php";
 
-if ($sql_type == "mysql")
-  require "extlib/dbabstraction/mysql.php";
-elseif ($sql_type == "sqlite")
-  require "extlib/dbabstraction/sqlite.php";
+if (file_exists("extlib/dbabstraction/" . $sql_type . ".php"))
+  require "extlib/dbabstraction/" . $sql_type . ".php";
 else
   die("Please select a sql_type!\n");
 

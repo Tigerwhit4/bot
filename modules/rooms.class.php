@@ -28,6 +28,8 @@ class rooms {
 				$invitearr = $invitearr["x"];
 
 				$i = 0;
+				$tmpvar = "";
+				$tmpvar2 = "";
 
 				while(!is_array($tmpvar) && $i < 5)
 					$tmpvar = $invitearr[$i]["#"]["invite"];

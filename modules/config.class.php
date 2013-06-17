@@ -8,7 +8,7 @@ class config {
     if (!in_array($from, $trust_users))
       return;
 
-    if (preg_match("/^config (set|get|del|list) (.*)$/mi", $msg, $matches)) {
+    if (preg_match("/^config (set|get|del) (.*)$/mi", $msg, $matches)) {
       $answer = "ERR.";
 
       if ($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/mi", $matches[2], $submatches)) {
@@ -21,7 +21,7 @@ class config {
       } elseif ($matches[1] == "get") {
         $answer = get_config($matches[2]);
 
-        if ($answer == "")
+        if (empty($answer))
           $answer = "-ENOENTRY";
       } elseif ($matches[1] == "del") {
         del_config($matches[2]);

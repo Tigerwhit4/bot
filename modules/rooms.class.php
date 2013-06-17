@@ -17,7 +17,7 @@ class rooms {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
@@ -41,14 +41,14 @@ class rooms {
 
 				if($from != "" && $jid != "") {
 					$channel = get_config("channel");
-					$channel = split("\n", $channel);
+					$channel2 = explode("\n", $channel);
 
-					if(!in_array($from, $channel) && in_array($jid, $trust_users)) {
+					if(!in_array($from, $channel2) && in_array($jid, $trust_users)) {
 						$channel = trim($channel . "\n" . $from);
 						del_config("channel");
 						set_config("channel", $channel);
 						$channel = get_config("channel");
-                                    		$rooms = split("\n", $channel);
+                                    		$rooms = explode("\n", $channel);
 					}
 
 					$JABBER->SendPresence(NULL, $from . "/" . $JABBER->username, NULL, NULL, NULL);
@@ -77,7 +77,7 @@ class rooms {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
@@ -94,10 +94,10 @@ class rooms {
 				$JABBER->SendPresence(NULL, $matches[2] . "/" . $JABBER->username, NULL, NULL, NULL);
 
 				$channel = get_config("channel");
-				$rooms = split("\n", $channel);
+				$rooms = explode("\n", $channel);
 			} elseif($matches[1] == "del") {
 				$channel = get_config("channel");
-				$channel = split("\n", $channel);
+				$channel = explode("\n", $channel);
 
 				foreach($channel as $chan) {
 					if($chan != $matches[2])
@@ -110,7 +110,7 @@ class rooms {
 				set_config("channel", $newchannel);
 
 				$channel = get_config("channel");
-				$rooms = split("\n", $channel);
+				$rooms = explode("\n", $channel);
 			}
 		} elseif($msg == "channel list") {
 			$channel = get_config("channel");
@@ -125,10 +125,10 @@ class rooms {
 				set_config("channel_log", $channel_log);
 
 				$channel_log = get_config("channel_log");
-				$rooms_log = split("\n", $channel_log);
+				$rooms_log = explode("\n", $channel_log);
 			} elseif($matches[1] == "del") {
 				$channel_log = get_config("channel_log");
-				$channel_log = split("\n", $channel_log);
+				$channel_log = explode("\n", $channel_log);
 
 				foreach($channel_log as $chan_log) {
 					if($chan_log != $matches[2])
@@ -139,7 +139,7 @@ class rooms {
 				set_config("channel_log", $newchannel_log);
 
 				$channel_log = get_config("channel_log");
-				$rooms_log = split("\n", $channel_log);
+				$rooms_log = explode("\n", $channel_log);
 			}
 		} elseif($msg == "channel_log list") {
 			$channel_log = get_config("channel_log");

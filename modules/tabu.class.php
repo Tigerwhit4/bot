@@ -26,7 +26,7 @@ class tabu {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];

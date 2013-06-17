@@ -22,7 +22,7 @@ class helper {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
@@ -61,7 +61,7 @@ class helper {
 		global $modules_chat;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = split("/", $from);
+		$from = explode("/", $from);
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 

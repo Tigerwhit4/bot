@@ -22,7 +22,7 @@ class hello {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
@@ -36,7 +36,7 @@ class hello {
 			return;
 
 		if(eregi("^(" . $greetings . ").*" . $JABBER->username . ".*$", $msg)) {
-			$greetings = split("\|", $greetings);
+			$greetings = explode("|", $greetings);
 			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $greet));
 		}
@@ -53,7 +53,7 @@ class hello {
 		global $greetings;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from);
+		$from_temp = explode("/", $from);
 		$from = $from_temp[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
@@ -66,7 +66,7 @@ class hello {
 		if($greetings == "")
 			return;
 
-		$greetings = split("\|", $greetings);
+		$greetings = explode("|", $greetings);
 		
 		if(eregi("^(" . join("|", $greetings) . ")$", $msg)) {
 			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];

@@ -22,12 +22,12 @@ class log {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = split("/", $from);
+		$from = explode("/", $from);
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
 		$from2 = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = split("/", $from2);
+		$from_temp = explode("/", $from2);
 		$from = $from_temp[0];
 		$user = $from_temp[1];
 

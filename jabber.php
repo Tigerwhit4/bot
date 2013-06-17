@@ -67,10 +67,10 @@
 	$JABBER->SendPresence(NULL, NULL, $online_msg, NULL, $jabber_priority);
 
 	$channel_log = get_config("channel_log");
-	$rooms_log = split("\n", $channel_log);
+	$rooms_log = explode("\n", $channel_log);
 
 	$channel = get_config("channel");
-	$rooms = split("\n", $channel);
+	$rooms = explode("\n", $channel);
 
 	foreach($rooms as $room)
 		$JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);

@@ -33,13 +33,13 @@ class kick {
 		global $rooms;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = split("/", $from);
+		$from = explode("/", $from);
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
 		if((eregi("^kick ([^:]*):(.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
-				$room_temp = split('@', $room);
+				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];
 
 				if(($matches[1] == $room) || ($matches[1] == $room_temp)) {
@@ -56,7 +56,7 @@ class kick {
 
 		if((eregi("^kickr (.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
-				$room_temp = split('@', $room);
+				$room_temp = explode('@', $room);
 				$room_temp = $room_temp[0];
 
 				if(($matches[1] == $room) || ($matches[1] == $room_temp)) {
@@ -69,7 +69,7 @@ class kick {
 						foreach($nicklist["iq"]["#"]["query"][0]["#"]["item"] as $participant) {
 							$participant = $participant["@"];
 
-							$from = split("/", $participant["jid"]);
+							$from = explode("/", $participant["jid"]);
 							$from = $from[0];
 
 							if(!in_array($from, $trust_users))

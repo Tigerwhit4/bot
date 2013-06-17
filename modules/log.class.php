@@ -44,7 +44,7 @@ class log {
 					system("mkdir -p " . $logdir . "/" . $from);
 			}
 			$handle = fopen($logdir . "/" . $from . "/" . $logday . ".log", "a");
-			$msg2 = ereg_replace("\n","\n>> ", $msg);
+			$msg2 = str_replace("\n", "\n>> ", $msg);
 			fwrite($handle, $timestmp . " " . $from . ": <" . $user . "> " . $msg2 . "\n");
 			@fclose($handle);
 		}

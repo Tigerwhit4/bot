@@ -17,9 +17,6 @@ class rechner {
         $answer = str_replace("Â", "", $answer);
         $answer = trim($answer);
 
-        if($answer == "")
-          $answer = "42";
-
         return $answer;
       }
     }

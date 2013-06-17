@@ -71,7 +71,7 @@
 	function del_config($name) {
 		global $config;
 		unset($config[$name]);
-		$result = make_mysql_query("DELETE FROM `config` WHERE `name` = '" . $name . "' LIMIT 1;");
+		$result = make_mysql_query("DELETE FROM `config` WHERE `name` = '" . make_mysql_escape($name) . "' LIMIT 1;");
 	}
 
 	function shortText($str, $chars) {

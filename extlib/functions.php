@@ -15,9 +15,9 @@
 		global $config;
 
 		if(get_config($name) == "")
-			$result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';");
+			$result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';") || die(mysql_error());
 		else
-			$result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
+			$result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;") || die(mysql_error());
 
 		$config[$name] = $value;										
 	}

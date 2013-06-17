@@ -47,7 +47,7 @@ class helper {
         }
       }
 
-      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array("body" => str_replace("!", "", $help)));
+      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array("body" => str_replace('!', '', $help)));
     }
   }
 

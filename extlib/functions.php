@@ -42,10 +42,10 @@ function split_message($message) {
   global $JABBER;
 
   $from = $JABBER->GetInfoFromMessageFrom($message);
-  $from_temp = explode("/", $from, 2);
+  $from_temp = explode('/', $from, 2);
 
   if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
-    $user = "";
+    $user = '';
   else
     @ list($from, $resource) = $from_temp;
 
@@ -63,7 +63,7 @@ function get_url($url, $disable_v6 = false) {
       curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
     if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {
-      curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ":" . $matches[3]);
+      curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ':' . $matches[3]);
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
       $url = $matches[1] . "://" . $matches[4];
     }

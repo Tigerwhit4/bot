@@ -16,7 +16,7 @@ class config {
         set_config($submatches[1], $submatches[2]);
 
         if (get_config($submatches[1]) == $submatches[2])
-          $answer = "ok.";
+          $answer = "OK.";
         else
           $answer = "ERR.";
       } elseif ($matches[1] == "get") {
@@ -31,7 +31,7 @@ class config {
       }
     } elseif (preg_match("/^config rehash$/i", $msg)) {
       $config = array();
-      $answer = "ok.";
+      $answer = "OK.";
     } elseif (preg_match("/^config list$/i", $msg)) {
       $answer = "actual config:\n";
       $result = make_sql_query("SELECT * FROM `config` ORDER BY `name`;");

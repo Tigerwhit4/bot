@@ -5,10 +5,10 @@ class rooms {
     global $JABBER;
     global $trusted_users;
 
-    if(array_key_exists("#", $message['message'])) {
+    if(array_key_exists('#', $message['message'])) {
       $invitearr = $message['message']['#'];
 
-      if(array_key_exists("x", $invitearr)) {
+      if(array_key_exists('x', $invitearr)) {
         $invitearr = $invitearr['x'];
 
         $i = 0;
@@ -37,7 +37,7 @@ class rooms {
             $rooms = explode("\n", $channel);
           }
 
-          $JABBER->SendPresence(NULL, $from . "/" . $JABBER->username, NULL, NULL, NULL);
+          $JABBER->SendPresence(NULL, $from . '/' . $JABBER->username, NULL, NULL, NULL);
         }
       }
     }
@@ -56,7 +56,7 @@ class rooms {
         $channel = trim($channel . "\n" . $matches[2]);
         del_config("channel");
         set_config("channel", $channel);
-        $JABBER->SendPresence(NULL, $matches[2] . "/" . $JABBER->username, NULL, NULL, NULL);
+        $JABBER->SendPresence(NULL, $matches[2] . '/' . $JABBER->username, NULL, NULL, NULL);
 
         $channel = get_config("channel");
         $rooms = explode("\n", $channel);
@@ -68,7 +68,7 @@ class rooms {
           if($chan != $matches[2])
             $newchannel = trim($newchannel . "\n" . $chan);
           else
-            $JABBER->SendPresence("unavailable", $matches[2] . "/" . $JABBER->username, NULL, NULL, NULL);
+            $JABBER->SendPresence("unavailable", $matches[2] . '/' . $JABBER->username, NULL, NULL, NULL);
         }
 
         del_config("channel");

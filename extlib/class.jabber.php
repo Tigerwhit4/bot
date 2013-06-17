@@ -865,7 +865,7 @@ class Jabber {
 	}
 
 	function GetInfoFromMessageBody($packet = NULL) {
-		return (is_array($packet)) ? $packet['message']['#']['body'][0]['#'] : false;
+		return (isset($packet['message']['#']['body'][0]['#'])) ? $packet['message']['#']['body'][0]['#'] : false;
 	}
 
 	function GetInfoFromMessageError($packet = NULL) {

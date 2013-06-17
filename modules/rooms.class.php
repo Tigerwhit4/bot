@@ -42,8 +42,7 @@ class rooms {
 				if($from != "" && $jid != "") {
 					$channel = get_config("channel");
 					$channel2 = explode("\n", $channel);
-
-					if(!in_array($from, $channel2) && in_array($jid, $trust_users)) {
+					if(!in_array($from, $channel2) && in_array($jid, $trusted_users)) {
 						$channel = trim($channel . "\n" . $from);
 						del_config("channel");
 						set_config("channel", $channel);

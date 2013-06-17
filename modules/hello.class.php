@@ -11,8 +11,8 @@ class hello {
 
     if(preg_match("/^(" . $greetings . ").*" . $JABBER->username . ".*$/", $msg)) {
       $greetings = explode("|", $greetings);
-      $greet = $greetings[array_rand($greetings)];
-      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $greet));
+      $answer = $greetings[array_rand($greetings)];
+      return $answer;
     }
   }
 

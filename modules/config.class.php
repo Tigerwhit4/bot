@@ -2,7 +2,6 @@
 class config {
 
   public static function chat($message, $from, $resource, $msg) {
-    global $JABBER;
     global $trust_users;
     global $config;
 
@@ -40,8 +39,7 @@ class config {
       }
     }
 
-    if (!empty($answer))
-      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array ("body" => $answer));
+    return $answer;
   }
 
   public static function trustHelp() {

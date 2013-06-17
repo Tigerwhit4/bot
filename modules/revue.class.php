@@ -4,8 +4,6 @@ class revue {
   public static $revues = array();
 
   public static function groupchat($message, $from, $user, $msg) {
-    global $JABBER;
-
     if(!isset(revue::$revues[$from]))
       revue::$revues[$from] = array();
 
@@ -19,8 +17,7 @@ class revue {
         $answer .= $revue['user'] . ": " . $revue['msg'];
       }
 
-      if(!empty($answer))
-        $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
+      return $answer;
     }
   }
 

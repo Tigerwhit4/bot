@@ -15,7 +15,7 @@ class rss {
     if (($i % 900) == 1) {
       $feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
       while (list($rss_feed) = make_sql_fetch_array($feeds, MYSQL_NUM)) {
-        $msg = "";
+        $answer = "";
         $item_old_title = array ();
         $item_old_date = array ();
 
@@ -49,23 +49,23 @@ class rss {
 
           if (!in_array(md5($title), $item_old_title) && (!in_array($timestamp, $item_old_date))) {
             if (count($item_old_title) != 0)
-              $msg .= "new post: " . $title . " on " . $link . "\n";
+              $answer .= "new post: " . $title . " on " . $link . "\n";
 
             $fp = make_sql_query("INSERT INTO `rss_feeds` ( `id`, `rss_url`, `title`, `date` ) VALUES ( NULL, '" . make_sql_escape($rss_feed) . "', '" . make_sql_escape($title) . "', '" . make_sql_escape(date("Y-m-d H:i:s", $timestamp)) . "')");
           }
         }
 
-        if (!empty($msg)) {
+        if (!empty($answer)) {
           $result = make_sql_query("SELECT `jid` FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($rss_feed) . "';");
           while ($row = make_sql_fetch_assoc($result)) {
             $receiver = $row['jid'];
             if (in_array($receiver, $rooms))
               $JABBER->SendMessage($receiver, "groupchat", NULL, array (
-                "body" => rtrim($msg)
+                "body" => rtrim($answer)
               ));
             else
               $JABBER->SendMessage($receiver, "chat", NULL, array (
-                "body" => rtrim($msg)
+                "body" => rtrim($answer)
               ));
           }
         }
@@ -74,7 +74,6 @@ class rss {
   }
 
   public static function chat($message, $from, $resource, $msg) {
-    global $JABBER;
     global $trust_users;
     global $config;
 
@@ -87,72 +86,69 @@ class rss {
       if (empty($jid))
         $jid = $from;
 
-      if (strpos($jid, "/") !== false)
-        $msg = "Feed notifications don't work with via MUCs.";
+      if (strpos($jid, '/') !== false)
+        $answer = "Feed notifications don't work with via MUCs.";
 
       elseif ($cmd == "subscribe") {
         switch(self::subscribe($jid, $url)) {
           case 0:
-            $msg = "Subscription successful. To unsubscribe, send me \"unsubscribe " . (($jid != $from)? $jid . " " : "") . $url . "\"";
+            $answer = "Subscription successful. To unsubscribe, send me \"unsubscribe " . (($jid != $from)? $jid . " " : "") . $url . "\"";
             break;
           case self::ERROR_ALREADY_SUBSCRIBED:
-            $msg = "Subscription failed: " . $jid . " are already subscribed to " . $url;
+            $answer = "Subscription failed: " . $jid . " are already subscribed to " . $url;
             break;
           case self::ERROR_NOT_A_FEED:
-            $msg = "Subscription failed: " . $url . " is not a valid feed.";
+            $answer = "Subscription failed: " . $url . " is not a valid feed.";
             break;
           default:
-            $msg = "Subscription failed.";
+            $answer = "Subscription failed.";
             break;
         }
       }
       elseif ($cmd == "unsubscribe") {
         switch(self::unsubscribe($jid, $url)) {
           case 0:
-            $msg = "Unsubscription successful.";
+            $answer = "Unsubscription successful.";
             break;
           case self::ERROR_NOT_SUBSCRIBED:
-            $msg = "Unsubscription failed: " . $jid . " is not subscribed to " . $url;
+            $answer = "Unsubscription failed: " . $jid . " is not subscribed to " . $url;
             break;
           default:
-            $msg = "Unsubscription failed.";
+            $answer = "Unsubscription failed.";
             break;
         }
       }
       elseif ($cmd == "list_subscriptions") {
         if ($jid == 'all_by_user') {
-          $msgs = array();
+          $answers = array();
           $users = make_sql_query("SELECT DISTINCT `jid` FROM `rss_subscriptions`;");
           while(list($user) = make_sql_fetch_array($users, MYSQL_NUM)) {
             $feeds = self::get_feeds_for_jid($user);
-            $msgs[] = $user . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
+            $answers[] = $user . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
           }
 
-          $msg = implode("\n\n", $msgs);
+          $answer = implode("\n\n", $answers);
         }
         elseif ($jid == 'all_by_feed') {
-          $msgs = array();
+          $answers = array();
           $feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
           while(list($feed) = make_sql_fetch_array($feeds, MYSQL_NUM)) {
             $jids = self::get_jids_for_feed($feed);
-            $msgs[] = $feed . " is subscribed by the following users:\n* " . implode("\n* ", $jids);
+            $answers[] = $feed . " is subscribed by the following users:\n* " . implode("\n* ", $jids);
           }
 
-          $msg = implode("\n\n", $msgs);
+          $answer = implode("\n\n", $answers);
         }
         else {
           $feeds = self::get_feeds_for_jid($jid);
           if (count($feeds) == 0)
-            $msg = $jid . " isn't subscribed to any feeds.";
+            $answer = $jid . " isn't subscribed to any feeds.";
           else
-            $msg = $jid . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
+            $answer = $jid . " is subscribed to the following feeds:\n* " . implode("\n* ", $feeds);
         }
       }
 
-      if (!empty($msg))
-        $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array (
-          "body" => $msg
-        ));
+      return $answer;
     }
   }
 

@@ -2,8 +2,6 @@
 class mensa {
 
   public static function groupchat($message, $from, $user, $msg) {
-    global $JABBER;
-
     if($msg == "!hlmensa") {
       $json_in = get_url("http://home.universe-factory.net/neoraider/cgi-bin/mensahl/mensahl.py", true);
 
@@ -18,12 +16,6 @@ class mensa {
           foreach($js['meals'] as $meal)
             $answer .= $meal['name'] . " (" . $meal['price'] . ")\n";
       }
-
-      $answer = trim($answer);
-
-      if(!empty($answer))
-        $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
-    }
 
     if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
       $time = date("G");
@@ -77,9 +69,9 @@ class mensa {
         $answer = trim($answer, "; ");
       } else
         $answer = strip_tags($content);
-
-      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
     }
+
+    return $answer;
   }
 
   public static function help() {

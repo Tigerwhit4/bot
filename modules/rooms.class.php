@@ -79,7 +79,7 @@ class rooms {
       }
     } elseif($msg == "channel list") {
       $channel = get_config("channel");
-      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array("body" => $channel));
+      return $channel;
     }
   }
 

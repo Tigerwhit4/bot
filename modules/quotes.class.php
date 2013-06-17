@@ -2,8 +2,6 @@
 class quotes {
 
   public static function groupchat($message, $from, $user, $msg) {
-    global $JABBER;
-
     if($msg == "!gbo") {
       $answer = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
       $answer = str_replace("\n", "", $answer);
@@ -41,8 +39,7 @@ class quotes {
       list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
     }
 
-    if (!empty($answer))
-      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
+    return $answer;
   }
 
   private static function get_quote_from_site($url, $starttoken, $endtoken, $source_is_utf8 = false, $politbash = false) {

@@ -2,8 +2,6 @@
 class rechner {
 
   public static function groupchat($message, $from, $user, $msg) {
-    global $JABBER;
-
     if(preg_match("/^\!rechner /i", $msg)) {
       if(preg_match("/^\!rechner ((w|wayne|exp|e|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|sqrt|[0-9!+.,*\/()^ -]+)*)$/i", $msg, $matches)) {
         $match = preg_replace("/(wayne|w)/i", "(42/23)", $matches[1]);
@@ -22,9 +20,7 @@ class rechner {
         if($answer == "")
           $answer = "42";
 
-        $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
-      } else {
-        $JABBER->SendMessage($from, "groupchat", NULL, array("body" => '42'));
+        return $answer;
       }
     }
   }

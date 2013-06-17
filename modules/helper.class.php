@@ -22,7 +22,7 @@ class helper {
         }
       }
 
-      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $help));
+      return $help;
     }
   }
 
@@ -47,7 +47,7 @@ class helper {
         }
       }
 
-      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array("body" => str_replace('!', '', $help)));
+      return str_replace('!', '', $help);
     }
   }
 

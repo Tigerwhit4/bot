@@ -2,8 +2,6 @@
 class google {
 
   public static function groupchat($message, $from, $user, $msg) {
-    global $JABBER;
-
     if(preg_match('/^!google (.*)/i', $msg, $matches)) {
       $http_response_header = array();
 
@@ -14,24 +12,20 @@ class google {
         )
       )));
 
-      unset($redir);
       foreach($http_response_header as $header_line)
         if(preg_match("/^Location: (.*)/", $header_line, $matches))
-          $redir = $matches[1];
+          $answer = $matches[1];
 
-      if(!isset ($redir)) {
+      if(!isset ($answer)) {
         preg_match_all("/<a href=\"(https?:\/\/[^\"]*)\"/iu", $content, $matches);
         foreach($matches[1] as $match)
           if(!preg_match("/^https?:\/\/[^\/]*google/i", $match)) {
-            $redir = $match;
+            $answer = $match;
             break;
           }
       }
 
-      if(!isset ($redir))
-        $redir = "nichts gefunden";  
-
-      $JABBER->SendMessage($from, "groupchat", NULL, array ("body" => $redir));
+      return $answer;
     }
   }
 

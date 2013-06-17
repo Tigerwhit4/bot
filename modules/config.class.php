@@ -32,22 +32,19 @@ class config {
 					$return = "ok.";
 				else
 					$return = "ERR.";
-			}
-			elseif ($matches[1] == "get") {
+			} elseif ($matches[1] == "get") {
 				$return = get_config($matches[2]);
 
 				if ($return == "")
 					$return = "-ENOENTRY";
-			}
-			elseif ($matches[1] == "del") {
+			} elseif ($matches[1] == "del") {
 				del_config($matches[2]);
 				if (get_config($matches[2]) == "")
 					$return = "deleted";
 			}
 		} elseif (preg_match("/^config rehash$/i", $msg)) {
-			$config = array ();
-			$return = "ok."
-			));
+			$config = array();
+			$return = "ok.";
 		} elseif (preg_match("/^config list$/i", $msg)) {
 			$return = "actual config:\n";
 			$result = make_sql_query("SELECT * FROM `config` ORDER BY `name`;");

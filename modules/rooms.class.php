@@ -49,8 +49,9 @@ class rooms {
 						set_config("channel", $channel);
 						$channel = get_config("channel");
                                     		$rooms = split("\n", $channel);
-					} else
-						$JABBER->SendPresence(NULL, $from . "/" . $JABBER->username, NULL, NULL, NULL);
+					}
+
+					$JABBER->SendPresence(NULL, $from . "/" . $JABBER->username, NULL, NULL, NULL);
 				}
 			}
 		}

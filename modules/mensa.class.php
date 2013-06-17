@@ -9,7 +9,7 @@ class mensa {
         return;
 
       $json_arr = json_decode($json_in, true);
-      $answer = "";
+      $answer = '';
 
       foreach($json_arr as $js) {
         if($js['date'] == date("Y-m-d")) 

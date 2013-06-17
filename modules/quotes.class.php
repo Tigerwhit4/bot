@@ -4,7 +4,7 @@ class quotes {
   public static function groupchat($message, $from, $user, $msg) {
     if($msg == "!gbo") {
       $answer = self::get_quote_from_site("http://german-bash.org/action/random", "<div class=\"zitat\">", "</div>", true);
-      $answer = str_replace("\n", "", $answer);
+      $answer = str_replace("\n", '', $answer);
     } elseif($msg == "!politbash") {
       $answer = self::get_quote_from_site("http://polit-bash.org/index.php?p=random", "<p class=\"quote\">", "</p>", false, true);
     } elseif($msg == "!bash")
@@ -24,7 +24,7 @@ class quotes {
         $result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' AND `id` = '" . make_sql_escape($matches[1]) . "';");
         list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
       } else {
-        $answer = "";
+        $answer = '';
         $result = make_sql_query("SELECT `id` FROM `quotes` WHERE MATCH(content) AGAINST ('" . make_sql_escape($matches[1]) . "') AND `channel` = '" . make_sql_escape($from) . "';");
         while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
           $answer .= "#" . $row['id'] . " ";
@@ -51,7 +51,7 @@ class quotes {
 
     $temp = strip_tags($temp);
     $temp = html_entity_decode($temp, ENT_COMPAT, $source_is_utf8 ? 'UTF-8' : 'ISO-8859-1');
-    $temp = str_replace("\n", "", $temp);
+    $temp = str_replace("\n", '', $temp);
     $temp = trim($temp);
 
     if ($source_is_utf8)

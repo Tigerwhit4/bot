@@ -25,7 +25,7 @@ class config {
           $answer = "-ENOENTRY";
       } elseif ($matches[1] == "del") {
         del_config($matches[2]);
-        if (get_config($matches[2]) == "")
+        if (get_config($matches[2]) == '')
           $answer = "deleted";
       }
     } elseif (preg_match("/^config rehash$/i", $msg)) {

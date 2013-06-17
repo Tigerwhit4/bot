@@ -41,7 +41,7 @@ class wetter {
 
 			$result = wetter :: google_weather($query);
 			if ($result)
-				$temp = "Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
+				$temp = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
 			else
 				$temp = "Nicht verfügbar.";
 			

@@ -1,102 +1,86 @@
 <?php
 class mensa {
 
-	public static function groupchat($message) {
-		global $JABBER;
+  public static function groupchat($message, $from, $user, $msg) {
+    global $JABBER;
 
-		$i = 0;
-		$timestamp = "";
+    if($msg == "!hlmensa") {
+      $json_in = get_url("http://home.universe-factory.net/neoraider/cgi-bin/mensahl/mensahl.py", true);
+      $json_arr = json_decode($json_in, true);
+      $answer = "";
 
-		while($timestamp == "" && $i < 5) {
-			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
-			$i++;
-		}
+      foreach($json_arr as $js) {
+        if($js['date'] == date("Y-m-d")) 
+          foreach($js['meals'] as $meal)
+            $answer .= $meal['name'] . " (" . $meal['price'] . ")\n";
+      }
 
-		if($timestamp)
-			return;
+      $answer = trim($answer);
 
-		list($from, $user, $msg) = split_message($message);
+      if(!empty($answer))
+        $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
+    }
 
-		if($JABBER->username == $user)
-			return;
+    if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
+      $time = date("G");
+      $matches[2] = trim($matches[2]);
 
-		if($msg == "!hlmensa") {
-			$json_in = get_url("http://home.universe-factory.net/neoraider/cgi-bin/mensahl/mensahl.py", true);
-			$json_arr = json_decode($json_in, true);
-			$answer = "";
-			
-			foreach($json_arr as $js) {
-				if($js['date'] == date("Y-m-d")) 
-					foreach($js['meals'] as $meal)
-						$answer .= $meal['name'] . " (" . $meal['price'] . ")\n";
-			}
+      switch(trim($matches[1])) {
+        case "mensa":
+          $url = "https://mortzu.de/mensa/";
+          break;
+        case "gw2":
+          $url = "https://mortzu.de/gw2/";
+          break;
+        case "hsmensa":
+          $url = "https://mortzu.de/hsmensa/";
+          break;
+        case "hsair":
+          $url = "https://mortzu.de/hsair/";
+          break;
+      }
 
-			$answer = trim($answer);
+      if($time >= 14 || $matches[2] == "tomorrow")
+        $mensa = file_get_contents($url . "?when=tomorrow");
+      else
+        $mensa = file_get_contents($url);
 
-			if(!empty($answer))
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
-		}
+      if(preg_match("/\<div id=\"mensadata\"\>(.*)\<\/div\>/isU", $mensa, $match))
+        $content = html_entity_decode($match[1], ENT_COMPAT, "UTF-8");
+      else
+        $content = "";
 
-		if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
-			$time = date("G");
-			$matches[2] = trim($matches[2]);
+      if(preg_match('/\<h3\>/iU', $content)) {
+        preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<p\>(.*)\<\/p\>/iU', $content, $matches);
+        preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<ul\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<\/ul\>/iU', $content, $auflauf);
+        preg_match_all('/\<h3\>Beilagen\<\/h3\>\n\<ul\>\n(.*)\n\<\/ul\>/iUs', $content, $beilagen);
 
-			switch(trim($matches[1])) {
-				case "mensa":
-					$url = "https://mortzu.de/mensa/";
-					break;
-				case "gw2":
-					$url = "https://mortzu.de/gw2/";
-					break;
-				case "hsmensa":
-					$url = "https://mortzu.de/hsmensa/";
-					break;
-				case "hsair":
-					$url = "https://mortzu.de/hsair/";
-					break;
-			}
+        $answer = "";
 
-			if($time >= 14 || $matches[2] == "tomorrow")
-				$mensa = file_get_contents($url . "?when=tomorrow");
-			else
-				$mensa = file_get_contents($url);
+        foreach($matches[1] as $key=>$essen)
+          $answer .= $essen . ": " . $matches[2][$key] . "\n";
 
-			if(preg_match("/\<div id=\"mensadata\"\>(.*)\<\/div\>/isU", $mensa, $match))
-				$content = html_entity_decode($match[1], ENT_COMPAT, "UTF-8");
-			else
-				$content = "";
+        if(is_array($auflauf) && isset($auflauf[1][0]) && $auflauf[1][0] == "Aufläufe")
+          $answer .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
 
-			if(preg_match('/\<h3\>/iU', $content)) {
-				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<p\>(.*)\<\/p\>/iU', $content, $matches);
-				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<ul\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<\/ul\>/iU', $content, $auflauf);
-				preg_match_all('/\<h3\>Beilagen\<\/h3\>\n\<ul\>\n(.*)\n\<\/ul\>/iUs', $content, $beilagen);
+        if(is_array($beilagen) && isset($beilagen[1][0])) {
+          $answer .= "Beilagen: ";
 
-				$answer = "";
+          foreach(explode("\n", $beilagen[1][0]) as $beilagen_line)
+            $answer .= strip_tags($beilagen_line) . "; ";
+        }
 
-				foreach($matches[1] as $key=>$essen)
-					$answer .= $essen . ": " . $matches[2][$key] . "\n";
+        $answer = trim($answer, "; ");
+      } else
+        $answer = strip_tags($content);
 
-				if(is_array($auflauf) && isset($auflauf[1][0]) && $auflauf[1][0] == "Aufläufe")
-					$answer .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
+      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
+    }
+  }
 
-				if(is_array($beilagen) && isset($beilagen[1][0])) {
-                                        $answer .= "Beilagen: ";
-
-				        foreach(explode("\n", $beilagen[1][0]) as $beilagen_line)
-						$answer .= strip_tags($beilagen_line) . "; ";
-				}
-
-				$answer = trim($answer, "; ");
-			} else
-				$answer = strip_tags($content);
-
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => trim($answer)));
-		}
-	}
-
-	public static function help() {
-		return "!mensa o. !gw2 o. !hsmensa o. !hsair <tomorrow> - outputs meal. after 2pm outputs meal for tomorrow; also with parameter tomorrow.";
-	}
+  public static function help() {
+    return "!mensa o. !gw2 o. !hsmensa o. !hsair <tomorrow> - outputs meal. after 2pm outputs meal for tomorrow; also with parameter tomorrow.";
+  }
 
 }
 ?>

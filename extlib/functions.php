@@ -1,169 +1,79 @@
 <?php
-	function get_config($name) {
-		global $config;
+function get_config($name) {
+  global $config;
 
-		if(isset($config[$name]))
-			return $config[$name];
+  if(isset($config[$name]))
+    return $config[$name];
 
-		$result = make_sql_query("SELECT * FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
-		$row = make_sql_fetch_array($result, MYSQL_ASSOC);
-		$config[$name] = $row["value"];
-		return trim($row["value"]);
-	}
+  $result = make_sql_query("SELECT * FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
+  $row = make_sql_fetch_array($result, MYSQL_ASSOC);
+  $config[$name] = $row['value'];
 
-	function set_config($name, $value) {
-		global $config;
+  return trim($row['value']);
+}
 
-		if(get_config($name) == "")
-			$result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';") || die(mysql_error());
-		else
-			$result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;") || die(mysql_error());
+function set_config($name, $value) {
+  global $config;
 
-		$config[$name] = $value;										
-	}
+  if(get_config($name) == '')
+    $result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';") || die(mysql_error());
+  else
+    $result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;") || die(mysql_error());
 
-	function del_config($name) {
-		global $config;
-		unset($config[$name]);
-		$result = make_sql_query("DELETE FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
-	}
+  $config[$name] = $value;
+}
 
-	function shortText($str, $chars) {
-		if(strlen($str) > $chars) {
-			$str = mb_substr($str, 0, $chars, "UTF-8");
-			$str = $str . "...";
-			return $str;
-		} else
-			return $str;
-	}
+function del_config($name) {
+  global $config;
+  unset($config[$name]);
+  $result = make_sql_query("DELETE FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
+}
 
-	function chkserver($host, $port) {
-		$hostip = @gethostbyname($host);
+function extractstring($str, $start, $end) {
+  $str = stristr($str, $start);
+  $str = substr($str, strlen($start));
+  $str = stristr($str, $end, true);
 
-		if ($hostip == $host)
-			return false;
-		else {
-			if (!$x = @fsockopen($hostip, $port, $errno, $errstr, 5))
-				return false;
-			else
-				return true;
+  return $str;
+}
 
-			@fclose($x);
-		}
-	}
+function split_message($message) {
+  global $rooms;
+  global $JABBER;
 
-	function getwhois($domain) {
-		$whois = new Whois();
+  $from = $JABBER->GetInfoFromMessageFrom($message);
+  $from_temp = explode("/", $from, 2);
 
-		if(!$whois->ValidDomain($domain))
-			return "Sorry, the domain is not valid or not supported.";
+  if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
+    $user = "";
+  else
+    @ list($from, $resource) = $from_temp;
 
-		if($whois->Lookup($domain))
-			return $whois->GetData(1);
-		else
-			return "Sorry, an error occurred.";
-	}
+  $msg = $JABBER->GetInfoFromMessageBody($message);
 
-	function gethostbyname6($host, $try_a = false) {
-		$dns = gethostbynamel6($host, $try_a);
+  return array($from, $resource, $msg);
+}
 
-		if($dns == false)
-			return false;
-		else
-			return $dns[0];
-	}
+function get_url($url, $disable_v6 = false) {
+  if (function_exists("curl_init")) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-	function gethostbynamel6($host, $try_a = false) {
-		if(function_exists("dns_get_record")) {
-			$dns6 = dns_get_record($host, DNS_AAAA);
+    if($disable_v6 == true)
+      curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-			if($try_a == true) {
-				$dns4 = dns_get_record($host, DNS_A);
-				$dns = array_merge($dns4, $dns6);
-			} else
-				$dns = $dns6;
+    if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {
+      curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ":" . $matches[3]);
+      curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+      $url = $matches[1] . "://" . $matches[4];
+    }
 
-			$ip6 = array();
-			$ip4 = array();
-
-			foreach($dns as $record) {
-				if ($record["type"] == "A")
-					$ip4[] = $record["ip"];
-
-				if ($record["type"] == "AAAA")
-					$ip6[] = $record["ipv6"];
-			}
-
-			if(count($ip6) < 1) {
-				if ($try_a == true) {
-					if (count($ip4) < 1)
-						return false;
-					else
-						return $ip4;
-				} else
-					return false;
-			} else
-				return $ip6;
-		}
-		return false;
-	}
-
-	function zufallszahl($x = 0, $y = 1000) {
-		list($u, $s) = explode(" ", microtime());
-		mt_srand((float) $s + ((float) $u * 100000));
-		$z = mt_rand($x, $y);
-		return $z;
-	}
-
-	function extractstring($str, $start, $end) {
-		$str = stristr($str, $start);
-		$str = substr($str, strlen($start));
-		$str = stristr($str, $end, true);
-
-		return $str;
-	}
-
-	function br2nl($string) {
-		return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
-	}
-
-	function split_message($message) {
-		global $rooms;
-		global $JABBER;
-
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from, 2);
-
-		if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
-			$user = "";
-		else
-			@list($from, $resource) = $from_temp;
-
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-
-		return array($from, $resource, $msg);
-	}
-
-	function get_url($url, $disable_v6 = false) {
-		if (function_exists("curl_init")) {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-			if($disable_v6 == true)
-				curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-
-			if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {
-				curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ":" . $matches[3]);
-				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-				$url = $matches[1] . "://" . $matches[4];
-			}
-
-			curl_setopt($ch, CURLOPT_URL, $url);
-			return curl_exec($ch);
-			curl_close($ch);
-		}
-		elseif (exec("which wget")) return shell_exec("wget --no-check-certificate -O - -- " . escapeshellarg($url));
-		else
-			return file_get_contents($url);
-	}
+    curl_setopt($ch, CURLOPT_URL, $url);
+    return curl_exec($ch);
+    curl_close($ch);
+  }
+  elseif (exec("which wget")) return shell_exec("wget --no-check-certificate -O - -- " . escapeshellarg($url));
+  else
+    return file_get_contents($url);
+}
 ?>

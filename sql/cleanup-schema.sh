@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env sh
 
 [ ! -f "$1" ] &&
 	echo usage: $0 [file] >&2 &&

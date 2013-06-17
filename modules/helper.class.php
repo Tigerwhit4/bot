@@ -1,77 +1,59 @@
 <?php
 class helper {
 
-	public static function groupchat($message) {
-		global $JABBER;
-		global $trust_users;
-		global $modules_groupchat;
+  public static function groupchat($message, $from, $user, $msg) {
+    global $JABBER;
+    global $trust_users;
+    global $modules_groupchat;
 
-		$i = 0;
-		$timestamp = "";
-		
-		while($timestamp == "" && $i < 5) {
-			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
-			$i++;
-		}
+    if($msg == "!help") {
+      $help = $JABBER->username . " knows these commands:\n";
 
-		if($timestamp)
-			return;
+      foreach($modules_groupchat as $modul_name) {
+        $reflector = new ReflectionClass($modul_name);
 
-		list($from, $user, $msg) = split_message($message);
+        if($reflector->hasMethod("help") && $reflector->hasMethod("groupchat")) {
+          $method = new ReflectionMethod($modul_name, "help");
+          $help .= $method->invoke(NULL) . "\n";
+        }
+        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("groupchat")) && (in_array($from, $trust_users))) {
+          $method = new ReflectionMethod($modul_name, "trustHelp");
+          $help .= $method->invoke(NULL) . "\n";
+        }
+      }
 
-		if($JABBER->username == $user)
-			return;
+      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $help));
+    }
+  }
 
-		if($msg == "!help") {
-			$help = $JABBER->username . " knows these commands:\n";
+  public static function chat($message, $from, $resource, $msg) {
+    global $JABBER;
+    global $trust_users;
+    global $modules_chat;
 
-			foreach($modules_groupchat as $modul_name) {
-				$reflector = new ReflectionClass($modul_name);
+    if($msg == "help") {
+      $help = $JABBER->username . " knows these commands:\n";
 
-				if($reflector->hasMethod("help") && $reflector->hasMethod("groupchat")) {
-					$method = new ReflectionMethod($modul_name, "help");
-					$help .= $method->invoke(NULL) . "\n";
-				}
-				if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("groupchat")) && (in_array($from, $trust_users))) {
-					$method = new ReflectionMethod($modul_name, "trustHelp");
-					$help .= $method->invoke(NULL) . "\n";
-				}
-			}
+      foreach($modules_chat as $modul_name) {
+        $reflector = new ReflectionClass($modul_name);
 
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $help));
-		}
-	}
+        if($reflector->hasMethod("help") && $reflector->hasMethod("chat")) {
+          $method = new ReflectionMethod($modul_name, "help");
+          $help .= $method->invoke(NULL) . "\n";
+        }
+        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("chat")) && (in_array($from, $trust_users))) {
+          $method = new ReflectionMethod($modul_name, "trustHelp");
+          $help .= $method->invoke(NULL) . "\n";
+        }
+      }
 
-	public static function chat($message) {
-		global $JABBER;
-		global $trust_users;
-		global $modules_chat;
+      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array("body" => str_replace("!", "", $help)));
+    }
+  }
 
-		list($from, , $msg) = split_message($message);
-
-		if($msg == "help") {
-			$help = $JABBER->username . " knows these commands:\n";
-
-			foreach($modules_chat as $modul_name) {
-				$reflector = new ReflectionClass($modul_name);
-
-				if($reflector->hasMethod("help") && $reflector->hasMethod("chat")) {
-					$method = new ReflectionMethod($modul_name, "help");
-					$help .= $method->invoke(NULL) . "\n";
-				}
-				if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("chat")) && (in_array($from, $trust_users))) {
-					$method = new ReflectionMethod($modul_name, "trustHelp");
-					$help .= $method->invoke(NULL) . "\n";
-				}
-			}
-
-			$JABBER->SendMessage($from, "chat", NULL, array("body" => str_replace("!", "", $help)));
-		}
-	}
-
-	public static function help() {
-		return "!help - returns this helptext";
-	}
+  public static function help() {
+    return "!help - returns this helptext";
+  }
 
 }
 ?>

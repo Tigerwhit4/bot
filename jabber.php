@@ -1,15 +1,15 @@
-#!/usr/bin/php
+#! /usr/bin/env php
 <?php
 $config = array();
 
 require "config.php";
 
 if ($sql_type == "mysql")
-	require "extlib/dbabstraction/mysql.php";
+  require "extlib/dbabstraction/mysql.php";
 elseif ($sql_type == "sqlite")
-	require "extlib/dbabstraction/sqlite.php";
+  require "extlib/dbabstraction/sqlite.php";
 else
-	die("Please select a sql_type");
+  die("Please select a sql_type!\n");
 
 make_sql_ensure_connection();
 
@@ -18,18 +18,18 @@ require "extlib/Thread.php";
 require "extlib/functions.php";
 
 if (!Thread :: available())
-	die("Threads not supported\n");
+  die("Threads not supported!\n");
 
 if (!function_exists("curl_init"))
-	die("curl is necessary");
+  die("curl is necessary!\n");
 
 ini_set("default_socket_timeout", 5);
 ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3");
 
 if (!$error_reporting)
-	error_reporting(0);
+  error_reporting(0);
 else
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+  error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $modules_groupchat = array();
 $modules_chat = array();
@@ -44,35 +44,35 @@ $trust_users = array();
 $handle = opendir("modules/");
 
 while ($file = readdir($handle)) {
-	if (preg_match('/^(.*)\.class\.php$/i', $file, $result)) {
-		$modul_name = $result[1];
-		require_once ("modules/" . $modul_name . ".class.php");
-		$reflector = new ReflectionClass($modul_name);
+  if (preg_match('/^(.*)\.class\.php$/i', $file, $result)) {
+    $modul_name = $result[1];
+    require_once ("modules/" . $modul_name . ".class.php");
+    $reflector = new ReflectionClass($modul_name);
 
-		if ($reflector->hasMethod("groupchat"))
-			array_push($modules_groupchat, $modul_name);
+    if ($reflector->hasMethod("groupchat"))
+      array_push($modules_groupchat, $modul_name);
 
-		if ($reflector->hasMethod("chat"))
-			array_push($modules_chat, $modul_name);
+    if ($reflector->hasMethod("chat"))
+      array_push($modules_chat, $modul_name);
 
-		if ($reflector->hasMethod("normal"))
-			array_push($modules_normal, $modul_name);
+    if ($reflector->hasMethod("normal"))
+      array_push($modules_normal, $modul_name);
 
-		if ($reflector->hasMethod("cron"))
-			array_push($modules_cron, $modul_name);
+    if ($reflector->hasMethod("cron"))
+      array_push($modules_cron, $modul_name);
 
-		if ($reflector->hasMethod("init"))
-			array_push($modules_init, $modul_name);
+    if ($reflector->hasMethod("init"))
+      array_push($modules_init, $modul_name);
 
-		if ($reflector->hasMethod("shutdown"))
-			array_push($modules_shutdown, $modul_name);
-	}
+    if ($reflector->hasMethod("shutdown"))
+      array_push($modules_shutdown, $modul_name);
+  }
 }
 
 closedir($handle);
 
 // cleanup status table
-make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
+make_sql_query("UPDATE `status` SET `status` = 0, `res` = '';");
 
 $JABBER = new Jabber;
 $JABBER->server = $jabber_server;
@@ -96,127 +96,141 @@ $channel = get_config("channel");
 $rooms = explode("\n", $channel);
 
 foreach ($rooms as $room)
-	$JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);
+  $JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);
 
 function Handler_presence_subscribed($message) {
-	global $JABBER;
+  global $JABBER;
 
-	$jid = $JABBER->GetInfoFromPresenceFrom($message);
-	$JABBER->RosterUpdate();
+  $jid = $JABBER->GetInfoFromPresenceFrom($message);
+  $JABBER->RosterUpdate();
 }
 
 function Handler_presence_available($message) {
-	global $JABBER;
-	global $trust_users;
-	global $trusted_users;
-	global $rooms;
+  global $JABBER;
+  global $trust_users;
+  global $trusted_users;
+  global $rooms;
 
-	$jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-	$jid = $JABBER->StripJID($jid2);
+  $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+  $jid = $JABBER->StripJID($jid2);
 
-	if (($jid != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid, $rooms))) {
-		$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
+  if (($jid != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid, $rooms))) {
+    $lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
 
-		if ($lines < 1)
-			$fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
-		else
-			if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "')=0;") > 0)
-				$fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid2)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
-	}
+    if ($lines < 1)
+      $fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
+    else
+      if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "')=0;") > 0)
+        $fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid2)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
+  }
 
-	if (in_array($jid, $trusted_users)) {
-		if (!in_array($jid, $trust_users))
-			$trust_users[] = $jid;
-	}
+  if (in_array($jid, $trusted_users)) {
+    if (!in_array($jid, $trust_users))
+      $trust_users[] = $jid;
+  }
 }
 
 function Handler_presence_unavailable($message) {
-	global $JABBER;
-	global $trust_users;
-	global $trusted_users;
+  global $JABBER;
+  global $trust_users;
+  global $trusted_users;
 
-	$jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-	$jid = $JABBER->StripJID($jid2);
+  $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+  $jid = $JABBER->StripJID($jid2);
 
-	$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "') > 0;");
+  $lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "') > 0;");
 
-	if ($lines > 0)
-		$fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid2)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
+  if ($lines > 0)
+    $fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid2)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
 
-	if (in_array($jid, $trusted_users)) {
-		if (in_array($jid, $trust_users)) {
-			foreach ($trust_users as $trust_user) {
-				if ($jid != $trust_user)
-					$trust_users2[] = $trust_user;
-			}
+  if (in_array($jid, $trusted_users)) {
+    if (in_array($jid, $trust_users)) {
+      foreach ($trust_users as $trust_user) {
+        if ($jid != $trust_user)
+          $trust_users2[] = $trust_user;
+      }
 
-			$trust_users = $trust_users2;
-		}
-	}
+      $trust_users = $trust_users2;
+    }
+  }
 }
 
 function Handler_presence_subscribe($message) {
-	global $JABBER;
+  global $JABBER;
 
-	$jid = $JABBER->GetInfoFromPresenceFrom($message);
-	$JABBER->SubscriptionAcceptRequest($jid);
-	$JABBER->RosterUpdate;
-	$JABBER->Subscribe($jid);
+  $jid = $JABBER->GetInfoFromPresenceFrom($message);
+  $JABBER->SubscriptionAcceptRequest($jid);
+  $JABBER->RosterUpdate;
+  $JABBER->Subscribe($jid);
 }
 
 function Handler_message_groupchat($message) {
-	global $modules_groupchat;
+  global $modules_groupchat;
 
-	foreach ($modules_groupchat as $modul_name)
-		call_user_func_array(array($modul_name, 'groupchat'), array($message));
+  $i = 0;
+  $timestamp = "";
+
+  while(empty($timestamp) && $i < 5) {
+    $timestamp = @strtotime($message['message']['#']['x'][$i]['@']['stamp']);
+    $i++;
+  }
+
+  if($timestamp)
+    return;
+
+  list($from, $user, $msg) = split_message($message);
+
+  if($JABBER->username == $user)
+    return;
+
+  foreach ($modules_groupchat as $modul_name)
+    call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
 }
 
 function Handler_message_normal($message) {
-	global $modules_normal;
-	global $JABBER;
+  global $modules_normal;
+  global $JABBER;
 
-	$from = $JABBER->GetInfoFromMessageFrom($message);
-	$from = $JABBER->StripJID($from);
+  list($from, $resource, $msg) = split_message($message);
 
-	if ($from == $JABBER->username . "@" . $JABBER->server)
-		return;
+  if ($from == $JABBER->username . "@" . $JABBER->server)
+    return;
 
-	foreach ($modules_normal as $modul_name)
-		call_user_func_array(array($modul_name, 'normal'), array($message));
+  foreach ($modules_normal as $modul_name)
+    call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
 }
 
 function Handler_message_chat($message) {
-	global $modules_chat;
-	global $JABBER;
+  global $modules_chat;
+  global $JABBER;
 
-	$from = $JABBER->GetInfoFromMessageFrom($message);
-	$from = $JABBER->StripJID($from);
+  list($from, $resource, $msg) = split_message($message);
 
-	if ($from == $JABBER->username . "@" . $JABBER->server)
-		return;
+  if ($from == $JABBER->username . "@" . $JABBER->server)
+    return;
 
-	foreach ($modules_chat as $modul_name)
-		call_user_func_array(array($modul_name, 'chat'), array($message));
+  foreach ($modules_chat as $modul_name)
+    call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
 }
 
 foreach ($modules_init as $modul_name)
-	call_user_func(array($modul_name, 'init'));
+  call_user_func(array($modul_name, 'init'));
 
 $i = 0;
 while ($JABBER->CruiseControl(1)) {
-	$i++;
+  $i++;
 
-	foreach ($modules_cron as $modul_name)
-		call_user_func_array(array($modul_name, 'cron'), array($i));
+  foreach ($modules_cron as $modul_name)
+    call_user_func_array(array($modul_name, 'cron'), array($i));
 }
 
 // cleanup status table
-make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
+make_sql_query("UPDATE `status` SET `status` = 0, `res` = '';");
 
 foreach ($modules_shutdown as $modul_name)
-	call_user_func(array($modul_name, 'shutdown'));
+  call_user_func(array($modul_name, 'shutdown'));
 
 $JABBER->Disconnect();
 @sql_close($sql_connection);
-die("");
+die();
 ?>

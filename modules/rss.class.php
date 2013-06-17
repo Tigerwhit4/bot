@@ -19,9 +19,9 @@ class rss {
 				$item_old_title = array();
 				$item_old_date = array();
 
-				$result = make_mysql_query("SELECT * FROM `rss_feeds` WHERE `rss_url` = '" . make_mysql_escape($rss_feed) . "';");
+				$result = make_sql_query("SELECT * FROM `rss_feeds` WHERE `rss_url` = '" . make_sql_escape($rss_feed) . "';");
 
-				while($row = make_mysql_fetch_array($result, MYSQL_ASSOC)) {
+				while($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
 					array_push($item_old_title, md5($row["title"]));
 					array_push($item_old_date, strtotime($row["date"]));
 				}
@@ -51,7 +51,7 @@ class rss {
 						if(count($item_old_title) != 0)
 							$msg .= "new post: " . $title . " on " . $link . "\n";
 
-						$fp = make_mysql_query("INSERT INTO `rss_feeds` ( `id`, `rss_url`, `title`, `date` ) VALUES ( NULL, '" . make_mysql_escape($rss_feed) . "', '" . make_mysql_escape($title) . "', '" . mysql_real_escape_string(date ("Y-m-d H:i:s", $timestamp)) . "')");
+						$fp = make_sql_query("INSERT INTO `rss_feeds` ( `id`, `rss_url`, `title`, `date` ) VALUES ( NULL, '" . make_sql_escape($rss_feed) . "', '" . make_sql_escape($title) . "', '" . make_sql_escape(date ("Y-m-d H:i:s", $timestamp)) . "')");
 					}
 				}
 

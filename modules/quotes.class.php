@@ -55,13 +55,13 @@ class quotes {
 			$msg2 = trim($matches[1]);
 
 			if($msg2 != "") {
-				$fp = make_mysql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_mysql_escape($msg2) . "', '" . make_mysql_escape($from) . "', NOW());");
+				$fp = make_sql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_sql_escape($msg2) . "', '" . make_sql_escape($from) . "', NOW());");
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Successful added!"));
 			}
 		} elseif($msg == "!quote") {
-			$result = make_mysql_query("SELECT * FROM `quotes` WHERE `channel` = '" . make_mysql_escape($from) . "';");
+			$result = make_sql_query("SELECT * FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "';");
 
-			while($row = make_mysql_fetch_array($result, MYSQL_ASSOC))
+			while($row = make_sql_fetch_array($result, MYSQL_ASSOC))
 				$content[] = $row["content"];
 
 			$quote = $content[zufallszahl(0, (count($content) - 1))];

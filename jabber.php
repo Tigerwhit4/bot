@@ -2,6 +2,15 @@
 <?php
 	$config = array();
 
+	require "config.php";
+
+	if($sql_type == "mysql")
+		require "extlib/dbabstraction/mysql.php";
+	elseif($sql_type == "sqlite")
+		require "extlib/dbabstraction/sqlite.php";
+	else
+		die("Please select a sql_type");
+
 	require "extlib/class.jabber.php";
 	require "extlib/simplepie/simplepie.inc";
 	require "extlib/functions.php";
@@ -92,12 +101,12 @@
 		$jid2 = $JABBER->StripJID($jid);
 
 		if(($jid2 != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid2, $rooms))) {
-			$lines = make_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_mysql_escape($jid) . "';");
+			$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
 
 			if($lines < 1)
-				$fp = make_mysql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_mysql_escape($jid) . "', '1');");
+				$fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
 			else
-				$fp = make_mysql_query("UPDATE `status` SET `status` = '1' WHERE `jid` ='" . make_mysql_escape($jid) . "';");
+				$fp = make_sql_query("UPDATE `status` SET `status` = '1' WHERE `jid` ='" . make_sql_escape($jid) . "';");
 		}
 
 		if(in_array($jid2, $trusted_users)) {
@@ -114,10 +123,10 @@
 		$jid = strtolower($JABBER->GetInfoFromPresenceFrom($message));
 		$jid2 = $JABBER->StripJID($jid);
 
-		$lines = make_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_mysql_escape($jid) . "';");
+		$lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
 
 		if($lines > 0)
-			$fp = make_mysql_query("UPDATE `status` SET `status` = '0' WHERE `jid` ='" . make_mysql_escape($jid) . "';");
+			$fp = make_sql_query("UPDATE `status` SET `status` = '0' WHERE `jid` ='" . make_sql_escape($jid) . "';");
 
 		if(in_array($jid2, $trusted_users)) {
 			if(in_array($jid2, $trust_users)) {
@@ -177,7 +186,7 @@
 	}
 
 	$JABBER->Disconnect();
-	@mysql_close($mysql_connection);
+	@sql_close($sql_connection);
 	die("");
 
 ?>

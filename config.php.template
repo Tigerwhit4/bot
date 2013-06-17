@@ -4,10 +4,11 @@
 	$trusted_users = array();
 	$check_hosts = array();
 
-	$mysql_host = "localhost";
-	$mysql_user = "mysqluser";
-	$mysql_pass = "mysqlpw";
-	$mysql_dtba = "mysqldb";
+	$sql_type = "sqlite";
+	$sql_host = "localhost";
+	$sql_user = "mysqluser";
+	$sql_pass = "mysqlpw";
+	$sql_dtba = "mysqldb";
 
 	$jabber_server = "jabberserver";
 	$jabber_port = "5222";

@@ -66,8 +66,8 @@ class config {
 		}
 		elseif (preg_match("/^config list$/i", $msg)) {
 			$return = "actual config:\n";
-			$result = make_mysql_query("SELECT * FROM `config` ORDER BY `name`;");
-			while ($row = make_mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$result = make_sql_query("SELECT * FROM `config` ORDER BY `name`;");
+			while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
 				$return .= $row['name'] . ": " . $row['value'] . "\n";
 			}
 			$JABBER->SendMessage($from, "chat", NULL, array (

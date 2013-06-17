@@ -1,58 +1,12 @@
 <?php
-	function mysql_ensure_connection() {
-		global $mysql_host;
-		global $mysql_user;
-		global $mysql_pass;
-		global $mysql_dtba;
-		global $mysql_connection;
-
-		if(is_null($mysql_connection) || !mysql_ping($mysql_connection)) {
-			@mysql_close($mysql_connection);
-			$mysql_connection = mysql_connect($mysql_host, $mysql_user, $mysql_pass);
-			mysql_select_db($mysql_dtba);
-		}
-	}
-
-	function make_mysql_query($query) {
-		mysql_ensure_connection();
-		return mysql_query($query);
-	}
-
-	function make_num_query($query) {
-		mysql_ensure_connection();
-		$result = mysql_query($query);
-		return mysql_num_rows($result);
-	}
-
-	function make_mysql_escape($query) {
-		mysql_ensure_connection();
-		return mysql_real_escape_string($query);
-	}
-
-	function make_mysql_affected_rows() {
-		return mysql_affected_rows();
-	}
-
-	function make_mysql_fetch_array($result, $result_type = NULL) {
-		return mysql_fetch_array($result, $result_type);
-	}
-
-	function make_mysql_fetch_row($result) {
-		return mysql_fetch_row($result);
-	}
-
-	function make_mysql_fetch_assoc($result) {
-		return mysql_fetch_assoc($result);
-	}
-
 	function get_config($name) {
 		global $config;
 
 		if(isset($config[$name]))
 			return $config[$name];
 
-		$result = make_mysql_query("SELECT * FROM `config` WHERE `name` = '" . make_mysql_escape($name) . "' LIMIT 1;");
-		$row = make_mysql_fetch_array($result, MYSQL_ASSOC);
+		$result = make_sql_query("SELECT * FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
+		$row = make_sql_fetch_array($result, MYSQL_ASSOC);
 		$config[$name] = $row["value"];
 		return trim($row["value"]);
 	}
@@ -61,9 +15,9 @@
 		global $config;
 
 		if(get_config($name) == "")
-			$result = make_mysql_query("INSERT INTO `config` SET `name` = '" . make_mysql_escape($name) . "', `value` = '" . make_mysql_escape($value) . "';");
+			$result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';");
 		else
-			$result = make_mysql_query("UPDATE `config` SET `value` = '" . make_mysql_escape($value) . "' WHERE `name` = '" . make_mysql_escape($name) . "' LIMIT 1;");
+			$result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
 
 		$config[$name] = $value;										
 	}
@@ -71,7 +25,7 @@
 	function del_config($name) {
 		global $config;
 		unset($config[$name]);
-		$result = make_mysql_query("DELETE FROM `config` WHERE `name` = '" . make_mysql_escape($name) . "' LIMIT 1;");
+		$result = make_sql_query("DELETE FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
 	}
 
 	function shortText($str, $chars) {

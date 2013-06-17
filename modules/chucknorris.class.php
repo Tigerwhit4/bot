@@ -28,7 +28,7 @@ class chucknorris {
 			}
 		} elseif(($msg == "die") && (in_array($from, $trust_users))) {
 			$JABBER->Disconnect();
-			@mysql_close($mysql_connection);
+			@sql_close($sql_connection);
 			@fclose($handle);
 			die("Sent to death by " . $from . "\n");
 		}

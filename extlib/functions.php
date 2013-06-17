@@ -1,29 +1,4 @@
 <?php
-	function clean_output($string)
-	{
-		$string = str_replace("<br>", " ", $string);
-		$string = strip_tags(utf8_encode($string));
-		$string = str_replace(">", "", $string);
-		$string = str_replace("<", "", $string);
-		$string = str_replace("  ", " ", $string);
-		$string = trim($string);
-
-		return $string;
-	}
-
-	function replace_day($tomorrow = false)
-	{
-		$tmp_day = date("w") - 1;
-		$time = date("G");
-
-		$weekday = array("Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa.", "So.");
-
-		if($time >= 14 || $tomorrow)
-			$tmp_day = $tmp_day + 1;
-
-		return $weekday[$tmp_day];
-	}
-
 	function mysql_ensure_connection()
 	{
 		global $mysql_host;

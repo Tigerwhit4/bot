@@ -75,22 +75,6 @@ class foobar
 		elseif($msg == "martian")
 		{
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Don't run! We are your friends!"));
-		}
-		elseif(preg_match('/.*warum.*/i', $msg, $matches) && $from == "blackhole@conference.cyb0rg.org")
-		{
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Weils geht."));
-		}
-		elseif(preg_match('/.*weiß( |)(ich |)nich.*/i', $msg, $matches))
-		{
-			if($from == 'blackhole@conference.cyb0rg.org' || $from == 'yodatest@conference.cyb0rg.org') {
-				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Was weißt du eigentlich?"));
-			}
-		}
-		elseif(preg_match('/.*why.*/i', $msg, $mathes) && $from == "blackhole@conference.cyb0rg.org")
-		{
-			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => "Whiles goes."));
-		}
-
 	}
 
 	public static function help()

@@ -98,7 +98,6 @@ foreach ($rooms as $room)
 function Handler_presence_subscribed($message) {
   global $JABBER;
 
-  $jid = $JABBER->GetInfoFromPresenceFrom($message);
   $JABBER->RosterUpdate();
 }
 

@@ -54,6 +54,47 @@ class wetter {
 			));
 		}
 	}
+	
+	public static function chat($message) {
+		global $JABBER;
+		global $check_hosts;
+		global $trusted_users;
+		global $trust_users;
+		global $logdir;
+		global $room_topic;
+		global $rooms_log;
+		global $modules_chat;
+
+		$from = $JABBER->GetInfoFromMessageFrom($message);
+		$from = explode("/", $from);
+		$from = $from[0];
+		$msg = $JABBER->GetInfoFromMessageBody($message);
+
+		if (preg_match("/^wetter/i", $msg)) {
+			if (preg_match("/^wetter ([a-zäüöß0-9 -]*)$/i", $msg, $matches)) {
+				if (intval($matches[1]) == 0)
+					$query = urlencode($matches[1]);
+				else
+					$query = urlencode($matches[1]) . "+deutschland";
+			} else {
+				$query = "bremen";
+			}
+
+			$result = wetter :: google_weather($query);
+			if ($result)
+				$temp = "Frisch, frischer, Fresh! Hier ist das Wetter für " . $result["stadt"] . ":\nAktuell: " . $result["jetzt_temp"] . " °C, " . $result["jetzt_wetter"] . "\n" . $result["jetzt_wind"] . "\n" . $result["jetzt_feuchtigkeit"];
+			else
+				$temp = "Nicht verfügbar.";
+			
+			$temp = strip_tags($temp);
+			$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
+			$temp = trim($temp);
+
+			$JABBER->SendMessage($from, "chat", NULL, array (
+				"body" => $temp
+			));
+		}
+	}
 
 	public static function help() {
 		return "!wetter von Bremen, !wetter <Ort>";

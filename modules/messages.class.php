@@ -7,7 +7,7 @@ class messages {
 		self::$thread->start();
 	}
 
-	private static function worker() {
+	public static function worker() {
 		global $JABBER;
 
 		while (true) {

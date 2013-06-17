@@ -1,4 +1,6 @@
 <?php
+require_once "extlib/simplepie/simplepie.inc";
+
 class rss {
 
 	public static function cron($i) {

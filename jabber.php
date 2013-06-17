@@ -15,7 +15,6 @@ make_sql_ensure_connection();
 require "extlib/class.jabber.php";
 require "extlib/Thread.php";
 require "extlib/functions.php";
-require "extlib/simplepie/simplepie.inc";
 
 if (!Thread :: available())
 	die("Threads not supported\n");

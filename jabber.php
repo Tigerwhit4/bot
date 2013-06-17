@@ -14,6 +14,7 @@ else
 	die("Please select a sql_type");
 
 require "extlib/class.jabber.php";
+require "extlib/Thread.php";
 require "extlib/functions.php";
 require "extlib/simplepie/simplepie.inc";
 

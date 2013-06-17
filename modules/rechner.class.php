@@ -30,7 +30,7 @@ class rechner {
 			return;
 
 		if(preg_match("/^\!rechner /i", $msg)) {
-			if(preg_match("/^\!rechner ((w|wayne|e|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|sqrt|[0-9!+.,*\/()^ -]+)*)$/i", $msg, $matches)) {
+			if(preg_match("/^\!rechner ((w|wayne|exp|e|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|sqrt|[0-9!+.,*\/()^ -]+)*)$/i", $msg, $matches)) {
 				$match = preg_replace("/(wayne|w)/i", "(42/23)", $matches[1]);
 				$url = "http://www.google.de/search?q=" . urlencode($match);
 	
@@ -42,8 +42,10 @@ class rechner {
 				$temp = utf8_encode($temp);
 				$temp = html_entity_decode($temp, ENT_COMPAT, 'UTF-8');
 				$temp = str_replace("\n", "", $temp);
+				$temp = str_replace("Â", "", $temp);
 				$temp = trim($temp);
 
+				if($temp == "") $temp = "42";
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $temp));
 			} else {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => '42'));

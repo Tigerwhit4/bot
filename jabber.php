@@ -4,9 +4,6 @@ $config = array ();
 
 require "config.php";
 
-if (!Thread :: available())
-	die("Threads not supported\n");
-
 if ($sql_type == "mysql")
 	require "extlib/dbabstraction/mysql.php";
 elseif ($sql_type == "sqlite") require "extlib/dbabstraction/sqlite.php";
@@ -19,6 +16,9 @@ require "extlib/functions.php";
 require "extlib/simplepie/simplepie.inc";
 
 require "threads/fritzbox_thread.php";
+
+if (!Thread :: available())
+	die("Threads not supported\n");
 
 define("MAGPIE_OUTPUT_ENCODING", "UTF-8");
 define("MAGPIE_CACHE_ON", false);

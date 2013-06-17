@@ -29,7 +29,7 @@ class cartesium {
 		if($JABBER->username == $user)
 			return;
 
-		if(preg_match('/^!cartesium(\s+(.*))?$/i', $msg, $matches)) {
+		if($msg == "!cartesium") {
 				$json = shell_exec("wget --no-check-certificate -q -O - -- https://smartenergy.uni-bremen.de/yoda/");
 				preg_match_all('/\<tr\>\<td\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<td align=right\>\<div class="(.*)"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info);
 				preg_match_all('/\<tr\>\<td\>\<div class="temp"\>\<h3\>(.*)\<\/h3\>\<\/td\>\<\/tr\>/iU', $json, $info2);

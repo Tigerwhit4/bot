@@ -112,7 +112,7 @@ function Handler_presence_available($message) {
   $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
   $jid = $JABBER->StripJID($jid2);
 
-  if (($jid != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid, $rooms))) {
+  if (($jid != $JABBER->username . '@' . $JABBER->server) && (!in_array($jid, $rooms))) {
     $lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
 
     if ($lines < 1)
@@ -198,7 +198,7 @@ function Handler_message_normal($message) {
 
   list($from, $resource, $msg) = split_message($message);
 
-  if ($from == $JABBER->username . "@" . $JABBER->server)
+  if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
   foreach ($modules_normal as $modul_name) {
@@ -217,7 +217,7 @@ function Handler_message_chat($message) {
 
   list($from, $resource, $msg) = split_message($message);
 
-  if ($from == $JABBER->username . "@" . $JABBER->server)
+  if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
   foreach ($modules_chat as $modul_name) {

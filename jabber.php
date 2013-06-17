@@ -11,6 +11,7 @@
 	define("MAGPIE_CACHE_ON", false);
 
 	ini_set("default_socket_timeout", 5);
+	ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3");
 
 	if(!$error_reporting)
 		error_reporting(0);

@@ -89,10 +89,7 @@ $JABBER->Connect() or die("Couldn't connect to jabber server!\n");
 $JABBER->SendAuth() or die("Jabber authentication failed!\n");
 $JABBER->SendPresence(NULL, NULL, $online_msg, NULL, $jabber_priority);
 
-$channel = get_config("channel");
-$rooms = explode("\n", $channel);
-
-foreach ($rooms as $room)
+foreach (explode("\n", get_config("channel")) as $room)
   $JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);
 
 function Handler_presence_subscribed($message) {
@@ -106,17 +103,14 @@ function Handler_presence_available($message) {
   global $trusted_users;
   global $rooms;
 
-  $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-  $jid = $JABBER->StripJID($jid2);
+  $jid_with_resource = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+  $jid = $JABBER->StripJID($jid_with_resource);
 
   if (($jid != $JABBER->username . '@' . $JABBER->server) && (!in_array($jid, $rooms))) {
-    $lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';");
-
-    if ($lines < 1)
+    if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';") == 0)
       $fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
-    else
-      if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "')=0;") > 0)
-        $fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid2)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
+    elseif (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "')=0;") > 0)
+      $fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
   }
 }
 
@@ -124,13 +118,11 @@ function Handler_presence_unavailable($message) {
   global $JABBER;
   global $trusted_users;
 
-  $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-  $jid = $JABBER->StripJID($jid2);
+  $jid_with_resource = strtolower($JABBER->GetInfoFromPresenceFrom($message));
+  $jid = $JABBER->StripJID($jid_with_resource);
 
-  $lines = make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "') > 0;");
-
-  if ($lines > 0)
-    $fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid2)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
+  if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "') > 0;") > 0)
+    $fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
 }
 
 function Handler_presence_subscribe($message) {
@@ -138,7 +130,7 @@ function Handler_presence_subscribe($message) {
 
   $jid = $JABBER->GetInfoFromPresenceFrom($message);
   $JABBER->SubscriptionAcceptRequest($jid);
-  $JABBER->RosterUpdate;
+  $JABBER->RosterUpdate();
   $JABBER->Subscribe($jid);
 }
 

@@ -44,12 +44,13 @@ class rooms {
 				if($from != "" && $jid != "") {
 					$channel = get_config("channel");
 					$channel2 = explode("\n", $channel);
+
 					if(!in_array($from, $channel2) && in_array($jid, $trusted_users)) {
 						$channel = trim($channel . "\n" . $from);
 						del_config("channel");
 						set_config("channel", $channel);
 						$channel = get_config("channel");
-                                    		$rooms = explode("\n", $channel);
+						$rooms = explode("\n", $channel);
 					}
 
 					$JABBER->SendPresence(NULL, $from . "/" . $JABBER->username, NULL, NULL, NULL);

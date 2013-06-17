@@ -65,7 +65,7 @@ class quotes {
 			while($row = make_sql_fetch_array($result, MYSQL_ASSOC))
 				$content[] = $row["content"];
 
-			$quote = $content[zufallszahl(0, (count($content) - 1))];
+			$quote = $content[array_rand($content)];
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $quote));
 		}
 	}

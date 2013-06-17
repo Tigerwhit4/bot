@@ -58,6 +58,7 @@ class mensa {
 			if(preg_match('/\<h3\>/iU', $content)) {
 				preg_match_all('/\<h3\>(.*)\<\/h3\>(.*)\<br \/\>/iU', $content, $matches);
 				preg_match_all('/\<h3\>(.*)\<\/h3\>\n\<ul\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<li\>(.*)\<\/li\>\n\<\/ul\>/iU', $content, $auflauf);
+				preg_match_all('/\<h3\>Beilagen\<\/h3\>\n\<ul\>\n(.*)\n\<\/ul\>/iUs', $content, $beilagen);
 
 				$msg = "";
 
@@ -65,7 +66,15 @@ class mensa {
 					$msg .= $essen . ": " . $matches[2][$key] . "\n";
 
 				if(is_array($auflauf) && isset($auflauf[1][0]) && $auflauf[1][0] == "Aufläufe")
-					$msg .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0];
+					$msg .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
+
+				if(is_array($beilagen) && isset($beilagen[1][0]))
+                                        $msg2 .= "Beilagen: ";
+
+				foreach(explode("\n", $beilagen[1][0]) as $bei)
+					$msg2 .= strip_tags($bei) . "; ";
+
+				$msg .= trim($msg2, "; ");
 			} else
 				$msg = strip_tags($content);
 

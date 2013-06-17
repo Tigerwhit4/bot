@@ -16,8 +16,7 @@ class mensa {
           foreach($js['meals'] as $meal)
             $answer .= $meal['name'] . " (" . $meal['price'] . ")\n";
       }
-
-    if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
+    } elseif(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
       $time = date("G");
       $matches[2] = trim($matches[2]);
 

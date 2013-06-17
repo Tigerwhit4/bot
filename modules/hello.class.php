@@ -38,7 +38,7 @@ class hello {
 
 		if(preg_match("/^(" . $greetings . ").*" . $JABBER->username . ".*$/", $msg)) {
 			$greetings = explode("|", $greetings);
-			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];
+			$greet = $greetings[array_rand($greetings)];
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $greet));
 		}
 	}
@@ -70,7 +70,7 @@ class hello {
 		$greetings = explode("|", $greetings);
 		
 		if(preg_match("/^(" . join("|", $greetings) . ")$/i", $msg)) {
-			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];
+			$greet = $greetings[array_rand($greetings)];
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => $greet));
 		}
 	}

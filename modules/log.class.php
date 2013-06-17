@@ -10,6 +10,8 @@ class log {
 		global $room_topic;
 		global $rooms_log;
 		global $handle;
+		
+		global $logday;
 
 		$i = 0;
 

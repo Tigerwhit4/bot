@@ -34,7 +34,7 @@ class cartesium {
 				foreach($info[2] as $key=>$inf)
 					$answer .= html_entity_decode(trim($inf), ENT_COMPAT, "UTF-8") . ": " . html_entity_decode(trim($info[4][$key]), ENT_COMPAT, "UTF-8") . "\n";
 
-				if($info2[1][1] != "")
+				if(!empty($info2[1][1]))
 					$answer .= $info2[1][1] . "\n";
 
 				if(empty($answer))

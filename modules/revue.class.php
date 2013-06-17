@@ -28,12 +28,12 @@ class revue {
 		if(preg_match("/^\!revue$/i", $msg)) {
 			$answer = "";
 			foreach(revue::$revues[$from] as $revue) {
-				if($answer != "") $answer .= "\n";
+				if(!empty($answer)) $answer .= "\n";
 				$answer .= $revue["user"] . ": " . $revue["msg"];
 			}
 
 
-			if($answer != "")
+			if(!empty($answer))
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
 		}
 	}

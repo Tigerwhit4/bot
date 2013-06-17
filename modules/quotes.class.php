@@ -30,7 +30,7 @@ class quotes {
 		elseif(preg_match('/^!addquote (.*)/is', $msg, $matches)) {
 			$new_quote = trim($matches[1]);
 
-			if($new_quote != "") {
+			if(!empty($new_quote)) {
 				$fp = make_sql_query("INSERT INTO `quotes` ( `id` , `content` , `channel` , `date` ) VALUES (NULL , '" . make_sql_escape($new_quote) . "', '" . make_sql_escape($from) . "', NOW());");
 				if (make_sql_affected_rows() == 1)
 					$answer = "Successfully added!";

@@ -55,7 +55,7 @@ class rss {
 					}
 				}
 
-				if ($msg != "") {
+				if (!empty($msg)) {
 					$result = make_sql_query("SELECT `jid` FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($rss_feed) . "';");
 					while ($row = make_sql_fetch_assoc($result)) {
 						$receiver = $row["jid"];

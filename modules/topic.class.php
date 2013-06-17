@@ -29,11 +29,11 @@ class topic {
 		if(preg_match('/^!topic (.*)/i', $msg, $matches)) {
 			$newtopic = trim($matches[1]);
 
-			if($newtopic != "") {
+			if(!empty($newtopic)) {
 				if($newtopic == "-clean") {
 					$newtopic = "";
 					$topic[$from] = "";
-				} elseif($topic[$from] != "")
+				} elseif(!empty($topic[$from]))
 					$newtopic = $newtopic . " | " . $topic[$from];
 			}
 

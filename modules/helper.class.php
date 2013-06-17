@@ -7,22 +7,22 @@ class helper {
     global $modules_groupchat;
 
     if($msg == "!help") {
-      $help = $JABBER->username . " knows these commands:\n";
+      $answer = $JABBER->username . " knows these commands:\n";
 
       foreach($modules_groupchat as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
         if($reflector->hasMethod("help") && $reflector->hasMethod("groupchat")) {
           $method = new ReflectionMethod($modul_name, "help");
-          $help .= $method->invoke(NULL) . "\n";
+          $answer .= $method->invoke(NULL) . "\n";
         }
         if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("groupchat")) && (in_array($from, $trusted_users))) {
           $method = new ReflectionMethod($modul_name, "trustHelp");
-          $help .= $method->invoke(NULL) . "\n";
+          $answer .= $method->invoke(NULL) . "\n";
         }
       }
 
-      return $help;
+      return $answer;
     }
   }
 
@@ -32,22 +32,22 @@ class helper {
     global $modules_chat;
 
     if($msg == "help") {
-      $help = $JABBER->username . " knows these commands:\n";
+      $answer = $JABBER->username . " knows these commands:\n";
 
       foreach($modules_chat as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
         if($reflector->hasMethod("help") && $reflector->hasMethod("chat")) {
           $method = new ReflectionMethod($modul_name, "help");
-          $help .= $method->invoke(NULL) . "\n";
+          $answer .= $method->invoke(NULL) . "\n";
         }
         if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("chat")) && (in_array($from, $trusted_users))) {
           $method = new ReflectionMethod($modul_name, "trustHelp");
-          $help .= $method->invoke(NULL) . "\n";
+          $answer .= $method->invoke(NULL) . "\n";
         }
       }
 
-      return str_replace('!', '', $help);
+      return str_replace('!', '', $answer);
     }
   }
 

@@ -5,23 +5,23 @@ class topic {
     global $JABBER;
     global $topic;
 
-    $tmp = $JABBER->GetInfoFromMessageSubject($message);
+    $topic_old = $JABBER->GetInfoFromMessageSubject($message);
 
-    if(!empty($tmp))
-      $topic[$from] = $tmp;
+    if(!empty($topic_old))
+      $topic[$from] = $topic_old;
 
     if(preg_match('/^!topic (.*)/i', $msg, $matches)) {
-      $newtopic = trim($matches[1]);
+      $topic_new = trim($matches[1]);
 
-      if(!empty($newtopic)) {
-        if($newtopic == "-clean") {
-          $newtopic = "";
+      if(!empty($topic_new)) {
+        if($topic_new == "-clean") {
+          $topic_new = "";
           $topic[$from] = "";
         } elseif(!empty($topic[$from]))
-          $newtopic = $newtopic . " | " . $topic[$from];
+          $topic_new = $topic_new . " | " . $topic[$from];
       }
 
-      $JABBER->SendMessage($from, "groupchat", NULL, array("subject" => $newtopic));
+      $JABBER->SendMessage($from, "groupchat", NULL, array("subject" => $topic_new));
     }
   }
 

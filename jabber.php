@@ -10,6 +10,8 @@ elseif ($sql_type == "sqlite") require "extlib/dbabstraction/sqlite.php";
 else
 	die("Please select a sql_type");
 
+make_sql_ensure_connection();
+
 require "extlib/class.jabber.php";
 require "extlib/Thread.php";
 require "extlib/functions.php";

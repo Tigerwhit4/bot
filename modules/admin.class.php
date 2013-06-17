@@ -1,5 +1,5 @@
 <?php
-class chucknorris {
+class admin {
 
   public static function chat($message, $from, $resource, $msg) {
     global $JABBER;
@@ -11,9 +11,7 @@ class chucknorris {
 
     if(preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) {
       foreach($rooms as $room) {
-        $room_temp = explode('@', $room);
-
-        if($matches[1] == $room_temp[0]) {
+        if($matches[1] == $room) {
           $JABBER->sendMessage($room, "groupchat", NULL, array("body" => $matches[2]));
           return;
         }

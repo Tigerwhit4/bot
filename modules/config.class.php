@@ -31,10 +31,10 @@ class config {
 		if (!in_array($from, $trust_users))
 			return;
 
-		if (preg_match("/^config (set|get|del|list) (.*)$/i", $msg, $matches)) {
+		if (preg_match("/^config (set|get|del|list) (.*)$/mi", $msg, $matches)) {
 			$return = "FAIL!";
 
-			if ($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/i", $matches[2], $submatches)) {
+			if ($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/mi", $matches[2], $submatches)) {
 				set_config($submatches[1], $submatches[2]);
 
 				if (get_config($submatches[1]) == $submatches[2])

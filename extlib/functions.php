@@ -143,4 +143,27 @@
 
 		return array($from, $resource, $msg);
 	}
+
+	function get_url($url, $disable_v6 = false) {
+		if (function_exists("curl_init")) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+			if($disable_v6 == true)
+				curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+			if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {
+				curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ":" . $matches[3]);
+				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+				$url = $matches[1] . "://" . $matches[4];
+			}
+
+			curl_setopt($ch, CURLOPT_URL, $url);
+			return curl_exec($ch);
+			curl_close($ch);
+		}
+		elseif (exec("which wget")) return shell_exec("wget --no-check-certificate -O - -- " . escapeshellarg($url));
+		else
+			return file_get_contents($url);
+	}
 ?>

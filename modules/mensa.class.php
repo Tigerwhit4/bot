@@ -37,9 +37,9 @@ class mensa {
       }
 
       if($time >= 14 || $matches[2] == "tomorrow")
-        $mensa = file_get_contents($url . "?when=tomorrow");
+        $mensa = get_url($url . "?when=tomorrow");
       else
-        $mensa = file_get_contents($url);
+        $mensa = get_url($url);
 
       if(preg_match("/\<div id=\"mensadata\"\>(.*)\<\/div\>/isU", $mensa, $match))
         $content = html_entity_decode($match[1], ENT_COMPAT, "UTF-8");

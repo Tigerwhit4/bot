@@ -7,7 +7,7 @@ class rechner {
         $match = preg_replace("/(wayne|w)/i", "(42/23)", $matches[1]);
         $url = "http://www.google.de/search?q=" . urlencode($match);
 
-        $inputfile = file_get_contents($url);
+        $inputfile = get_url($url);
         $answer = extractstring($inputfile, '<h2 class=r style="font-size:138%"><b>', '</b></h2>');
 
         $answer = str_replace('<sup>', '^', $answer);

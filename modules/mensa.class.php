@@ -20,6 +20,23 @@ class mensa {
 		if($JABBER->username == $user)
 			return;
 
+		if($msg == "!hlmensa") {
+			$json_in = get_url("http://home.universe-factory.net/neoraider/cgi-bin/mensahl/mensahl.py", true);
+			$json_arr = json_decode($json_in, true);
+			$answer = "";
+			
+			foreach($json_arr as $js) {
+				if($js['date'] == date("Y-m-d")) 
+					foreach($js['meals'] as $meal)
+						$answer .= $meal['name'] . " (" . $meal['price'] . ")\n";
+			}
+
+			$answer = trim($answer);
+
+			if(!empty($answer))
+				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
+		}
+
 		if(preg_match('/^!(mensa|gw2|hsmensa|hsair)(\s+(.*))?$/i', $msg, $matches)) {
 			$time = date("G");
 			$matches[2] = trim($matches[2]);

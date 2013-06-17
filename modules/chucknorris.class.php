@@ -10,6 +10,8 @@ class chucknorris {
 		global $room_topic;
 		global $rooms_log;
 		global $rooms;
+		
+		global $sql_connection;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from = explode("/", $from);

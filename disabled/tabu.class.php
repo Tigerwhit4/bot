@@ -31,7 +31,7 @@ class tabu {
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($from != 'blackhole@conference.cyb0rg.org')
+		if($from != 'blackhole@muc.planetcyborg.de')
 			return;
 
 		if($JABBER->username == $user)

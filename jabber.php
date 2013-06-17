@@ -57,6 +57,8 @@
 		}
 	}
 	
+	closedir($handle);
+	
 	// cleanup status table
 	make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
@@ -161,6 +163,10 @@
 
 	function Handler_message_normal($message) {
 		global $modules_normal;
+		global $JABBER;
+
+		$from = $JABBER->GetInfoFromMessageFrom($message);
+		$from = $JABBER->StripJID($from);
 
 		if($from == $JABBER->username . "@" . $JABBER->server)
 			return;
@@ -171,6 +177,10 @@
 
 	function Handler_message_chat($message) {
 		global $modules_chat;
+		global $JABBER;
+
+		$from = $JABBER->GetInfoFromMessageFrom($message);
+		$from = $JABBER->StripJID($from);
 
 		if($from == $JABBER->username . "@" . $JABBER->server)
 			return;

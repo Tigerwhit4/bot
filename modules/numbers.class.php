@@ -33,7 +33,10 @@ class numbers {
 			$date = date("d.m.Y W.") . " Woche " . date("H:i:s");
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($date)));
 		} elseif($msg == "!pi") {
+			$prec_for = ini_get("precision");
+			ini_set("precision", "50");
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode(pi())));
+			ini_set("precision", $prec_for);
 		} elseif($msg == "!number") {
 			$number = "";
 

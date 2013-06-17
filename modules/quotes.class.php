@@ -36,7 +36,7 @@ class quotes {
 					$answer = "Successfully added!";
 			}
 		} elseif($msg == "!quote") {
-			# get a random row from SQL - it's tricky!
+			// get a random row from SQL - it's tricky!
 			$result = make_sql_query("SELECT FLOOR(RAND() * COUNT(*)) FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "';");
 			list($offset) = make_sql_fetch_array($result, MYSQL_NUM);
 			$result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' LIMIT " . $offset . ", 1;");

@@ -671,6 +671,7 @@ class Jabber
 				{
 					$this->connected = false;
 					$this->AddToLog('EVENT: Disconnected');
+					return false;
 				}
 
 				$this->returned_keep_alive = false;

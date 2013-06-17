@@ -18,6 +18,7 @@ require "extlib/functions.php";
 require "extlib/simplepie/simplepie.inc";
 
 require "threads/fritzbox_thread.php";
+require "threads/message_thread.php";
 
 if (!Thread :: available())
 	die("Threads not supported\n");
@@ -200,6 +201,9 @@ $fritzbox_thread = new Thread('fritzbox_cruiser');
 
 $fritzbox_thread->start(10, 'fritzbox_thread');
 
+$message_thread = new Thread('message_fetcher');
+$message_thread->start(10, 'message_thread');
+
 $i = 0;
 while ($JABBER->CruiseControl(1)) {
 	$i++;
@@ -213,6 +217,9 @@ make_sql_query("UPDATE `status` SET `status`=0, `res`='';");
 
 if ($fritzbox_thread->isAlive())
 	$fritzbox_thread->stop();
+
+if ($message_thread->isAlive())
+	$message_thread->stop();
 
 $JABBER->Disconnect();
 @ sql_close($sql_connection);

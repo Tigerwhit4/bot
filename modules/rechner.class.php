@@ -1,9 +1,7 @@
 <?php
-class rechner
-{
+class rechner {
 	
-	public static function groupchat($message)
-	{
+	public static function groupchat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -14,13 +12,13 @@ class rechner
 
 		$i = 0;
 
-		while($timestamp == "" && $i < 5)
-		{
+		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
-		if($timestamp) {return;}
+		if($timestamp)
+			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = split("/", $from);
@@ -28,12 +26,11 @@ class rechner
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
-		if(eregi("^\!rechner ", $msg))
-		{
-			if(eregi("^\!rechner ((w|wayne|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|[0-9+.,*/()\^ -]+)*$)", $msg, $matches))
-			{
+		if(eregi("^\!rechner ", $msg)) {
+			if(eregi("^\!rechner ((w|wayne|inch|cm|c|h|pi|cos|sin|mod|tan|minuten|sekunden|meter|in|euro|dollar|[0-9+.,*/()\^ -]+)*$)", $msg, $matches)) {
 				$match = eregi_replace("(w|wayne)", "(42/23)", $matches[1]);
 				$url = "http://www.google.de/search?q=" . urlencode($match);
 	
@@ -48,16 +45,13 @@ class rechner
 				$temp = trim($temp);
 
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $temp));
-			}
-			else
-			{
+			} else {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => '42'));
 			}
 		}
 	}
 
-	public static function help()
-	{
+	public static function help() {
 		return "!rechner <term> - calculates term";
 	}
 

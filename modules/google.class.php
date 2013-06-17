@@ -1,9 +1,7 @@
 <?php
-class google
-{
+class google {
 
-	public static function groupchat($message)
-	{
+	public static function groupchat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -14,13 +12,13 @@ class google
 
 		$i = 0;
 
-		while($timestamp == "" && $i < 5)
-		{
+		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
-		if($timestamp) {return;}
+		if($timestamp)
+			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = split("/", $from);
@@ -28,10 +26,10 @@ class google
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
-		if(preg_match('/^!google (.*)/i', $msg, $matches))
-		{
+		if(preg_match('/^!google (.*)/i', $msg, $matches)) {
 			$msg2 = $matches[1];
 			$msg2 = addcslashes($msg2, "'\\");
 
@@ -55,8 +53,7 @@ class google
 		}
 	}
 
-	public static function help()
-	{
+	public static function help() {
 		return "!google <pattern> - returns link of the first google hit";
 	}
 

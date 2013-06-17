@@ -1,9 +1,7 @@
 <?php
-class hello
-{
+class hello {
 
-	public static function groupchat($message)
-	{
+	public static function groupchat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -15,13 +13,13 @@ class hello
 
 		$i = 0;
 
-		while($timestamp == "" && $i < 5)
-		{
+		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
-		if($timestamp) {return;}
+		if($timestamp)
+			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = split("/", $from);
@@ -29,21 +27,22 @@ class hello
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
 		$greetings = get_config("hello_greetings");
-		if($greetings == "") {return;}
 
-		if(eregi("^(" . $greetings . ").*" . $JABBER->username . ".*$", $msg))
-		{
+		if($greetings == "")
+			return;
+
+		if(eregi("^(" . $greetings . ").*" . $JABBER->username . ".*$", $msg)) {
 			$greetings = split("\|", $greetings);
 			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => $greet));
 		}
 	}
 
-	public static function chat($message)
-	{
+	public static function chat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -59,21 +58,23 @@ class hello
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
 		$greetings = get_config("hello_greetings");
-		if($greetings == "") {return;}
+
+		if($greetings == "")
+			return;
+
 		$greetings = split("\|", $greetings);
 		
-		if(eregi("^(" . join("|", $greetings) . ")$", $msg))
-		{
+		if(eregi("^(" . join("|", $greetings) . ")$", $msg)) {
 			$greet = $greetings[zufallszahl(0, (count($greetings) - 1))];
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => $greet));
 		}
 	}
 
-	public static function help()
-	{
+	public static function help() {
 		return utf8_decode("you can say " . str_replace("|", " or ", get_config("hello_greetings")) . " to me.");
 	}
 

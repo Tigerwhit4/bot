@@ -1,9 +1,7 @@
 <?php
-class numbers
-{
+class numbers {
 
-	public static function groupchat($message)
-	{
+	public static function groupchat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -14,13 +12,13 @@ class numbers
 
 		$i = 0;
 
-		while($timestamp == "" && $i < 5)
-		{
+		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
-		if($timestamp) {return;}
+		if($timestamp)
+			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = split("/", $from);
@@ -28,32 +26,25 @@ class numbers
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
-		if($msg == "!date")
-		{
+		if($msg == "!date") {
 			$date = date("d.m.Y W.") . " Woche " . date("H:i:s");
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($date)));
-		}
-		elseif($msg == "!pi")
-		{
+		} elseif($msg == "!pi") {
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode(pi())));
-		}
-		elseif($msg == "!number")
-		{
+		} elseif($msg == "!number") {
 			$number = "";
 
 			while(strlen($number) != 10)
-			{
 				$number .= zufallszahl(0, 9);
-			}
 
 			$JABBER->SendMessage($from, "groupchat", NULL, array("body" => utf8_encode($number)));
 		}
 	}
 
-	public static function help()
-	{
+	public static function help() {
 		return "!pi - shows pi\n!date - shows actually date\n!number - shows a random number";
 	}
 

@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+	$config = array();
+
 	require "extlib/class.jabber.php";
 	require "extlib/simplepie/simplepie.inc";
 	require "extlib/functions.php";
@@ -25,10 +27,8 @@
 
 	$handle = opendir("modules/");
 
-	while($file = readdir($handle))
-	{
-		if(eregi('^(.*)\.class\.php$', $file, $result))
-		{
+	while($file = readdir($handle)) {
+		if(eregi('^(.*)\.class\.php$', $file, $result)) {
 			$modul_name = $result[1];
 			require_once("modules/" . $modul_name . ".class.php");
 			$reflector = new ReflectionClass($modul_name);
@@ -72,20 +72,16 @@
 	$rooms = split("\n", $channel);
 
 	foreach($rooms as $room)
-	{
 		$JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);
-	}
 
-	function Handler_presence_subscribed($message)
-	{
+	function Handler_presence_subscribed($message) {
 		global $JABBER;
 
 		$jid = $JABBER->GetInfoFromPresenceFrom($message);
 		$JABBER->RosterUpdate();
 	}
 
-	function Handler_presence_available($message)
-	{
+	function Handler_presence_available($message) {
 		global $JABBER;
 		global $trust_users;
 		global $trusted_users;
@@ -94,31 +90,22 @@
 		$jid = strtolower($JABBER->GetInfoFromPresenceFrom($message));
 		$jid2 = $JABBER->StripJID($jid);
 
-		if(($jid2 != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid2, $rooms)))
-		{
+		if(($jid2 != $JABBER->username . "@" . $JABBER->server) && (!in_array($jid2, $rooms))) {
 			$lines = make_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_mysql_escape($jid) . "';");
 
 			if($lines < 1)
-			{
 				$fp = make_mysql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_mysql_escape($jid) . "', '1');");
-			}
 			else
-			{
 				$fp = make_mysql_query("UPDATE `status` SET `status` = '1' WHERE `jid` ='" . make_mysql_escape($jid) . "';");
-			}
 		}
 
-		if(in_array($jid2, $trusted_users))
-		{
+		if(in_array($jid2, $trusted_users)) {
 			if(!in_array($jid2, $trust_users))
-			{
 				$trust_users[] = $jid2;
-			}
 		}
 	}
 
-	function Handler_presence_unavailable($message)
-	{
+	function Handler_presence_unavailable($message) {
 		global $JABBER;
 		global $trust_users;
 		global $trusted_users;
@@ -128,32 +115,22 @@
 
 		$lines = make_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_mysql_escape($jid) . "';");
 
-		if($lines < 1)
-		{
-		}
-		else
-		{
+		if($lines > 0)
 			$fp = make_mysql_query("UPDATE `status` SET `status` = '0' WHERE `jid` ='" . make_mysql_escape($jid) . "';");
-		}
 
-		if(in_array($jid2, $trusted_users))
-		{
-			if(in_array($jid2, $trust_users))
-			{
-				foreach($trust_users as $trust_user)
-				{
+		if(in_array($jid2, $trusted_users)) {
+			if(in_array($jid2, $trust_users)) {
+				foreach($trust_users as $trust_user) {
 					if($jid2 != $trust_user)
-					{
 						$trust_users2[] = $trust_user;
-					}
 				}
+
 				$trust_users = $trust_users2;
 			}
 		}
 	}
 
-	function Handler_presence_subscribe($message)
-	{
+	function Handler_presence_subscribe($message) {
 		global $JABBER;
 
 		$jid = $JABBER->GetInfoFromPresenceFrom($message);
@@ -162,55 +139,40 @@
 		$JABBER->Subscribe($jid);
 	}
 
-	function Handler_message_groupchat($message)
-	{
+	function Handler_message_groupchat($message) {
 		global $modules_groupchat;
 
 		foreach($modules_groupchat as $modul_name)
-		{
 			eval($modul_name . '::groupchat($message);');
-		}
 	}
 
-	function Handler_message_normal($message)
-	{
+	function Handler_message_normal($message) {
 		global $modules_normal;
 
 		if($from == $JABBER->username . "@" . $JABBER->server)
 			return;
 
 		foreach($modules_normal as $modul_name)
-		{
 			eval($modul_name . '::normal($message);');
-		}
 	}
 
-	function Handler_message_chat($message)
-	{
+	function Handler_message_chat($message) {
 		global $modules_chat;
 
 		if($from == $JABBER->username . "@" . $JABBER->server)
 			return;
 
 		foreach($modules_chat as $modul_name)
-		{
 			eval($modul_name . '::chat($message);');
-		}
 	}
 
 	$i = 0;
 
-	while(true)
-	{
-		global $modules_cron;
-
+	while($JABBER->CruiseControl(1)) {
 		$i++;
-		$JABBER->CruiseControl(1);
 		
 		foreach($modules_cron as $modul_name)
-		{
 			eval($modul_name . '::cron($i);');
-		}
 	}
 
 	$JABBER->Disconnect();

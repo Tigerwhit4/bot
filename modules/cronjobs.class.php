@@ -1,9 +1,7 @@
 <?php
-class cronjobs
-{
+class cronjobs {
 
-	public static function cron($i)
-	{
+	public static function cron($i) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -12,9 +10,6 @@ class cronjobs
 		global $room_topic;
 		global $rooms_log;
 		global $rooms;
-
-		
-		
 	}
 
 }

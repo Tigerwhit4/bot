@@ -1,9 +1,7 @@
 <?php
-class wikipedia
-{
+class wikipedia {
 
-	public static function groupchat($message)
-	{
+	public static function groupchat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -14,13 +12,13 @@ class wikipedia
 
 		$i = 0;
 
-		while($timestamp == "" && $i < 5)
-		{
+		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
-		if($timestamp) {return;}
+		if($timestamp)
+			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = split("/", $from);
@@ -28,10 +26,10 @@ class wikipedia
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 		$user = $from_temp[1];
 
-		if($JABBER->username == $user) {return;}
+		if($JABBER->username == $user)
+			return;
 
-		if(preg_match('/^!wikipedia (.*)/i', $msg, $matches))
-		{
+		if(preg_match('/^!wikipedia (.*)/i', $msg, $matches)) {
 			$msg2 = $matches[1];
 			$msg2 = addcslashes($msg2, "'\\");
 
@@ -56,8 +54,7 @@ class wikipedia
 		}
 	}
 
-	public static function help()
-	{
+	public static function help() {
 		return "!wikipedia <pattern> - returns link of the wikipedia article";
 	}
 

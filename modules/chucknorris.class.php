@@ -1,9 +1,7 @@
 <?php
-class chucknorris
-{
+class chucknorris {
 
-	public static function chat($message)
-	{
+	public static function chat($message) {
 		global $JABBER;
 		global $check_hosts;
 		global $trusted_users;
@@ -18,20 +16,17 @@ class chucknorris
 		$from = $from[0];
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
-		if((eregi("^say ([^:]*):(.*)$", $msg, $matches)) && (in_array($from, $trust_users)))
-		{
+		if((eregi("^say ([^:]*):(.*)$", $msg, $matches)) && (in_array($from, $trust_users))) {
 			foreach($rooms as $room) {
 				$room_temp = split('@', $room);
 				$room_temp = $room_temp[0];
-				if($matches[1] == $room_temp)
-				{
+
+				if($matches[1] == $room_temp) {
 					$JABBER->sendMessage($room, "groupchat", NULL, array("body" => $matches[2]));
 					return;
 				}
 			}
-		}
-		else if(($msg == "die") && (in_array($from, $trust_users)))
-		{
+		} elseif(($msg == "die") && (in_array($from, $trust_users))) {
 			$JABBER->Disconnect();
 			@mysql_close($mysql_connection);
 			@fclose($handle);

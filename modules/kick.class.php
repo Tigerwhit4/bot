@@ -5,8 +5,6 @@ class kick {
 
 	public static function cron($i) {
 		global $JABBER;
-		global $rooms;
-		global $trust_users;
 
 		if(count(kick::$kickqueue) > 0) {
 			foreach(kick::$kickqueue as $nr => $kick) {
@@ -24,10 +22,7 @@ class kick {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
 		global $trust_users;
-		global $logdir;
-		global $rooms_log;
 		global $rooms;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);

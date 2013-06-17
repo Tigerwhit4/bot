@@ -3,10 +3,7 @@ class config {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
 		global $trust_users;
-		global $logdir;
-		global $rooms_log;
 		global $config;
 
 		$i = 0;
@@ -20,17 +17,13 @@ class config {
 		if ($timestamp)
 			return;
 
-		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from);
-		$from = $from_temp[0];
-		$msg = $JABBER->GetInfoFromMessageBody($message);
-		$user = $from_temp[1];
+		list($from, , $msg) = split_message($message);
 
 		if (!in_array($from, $trust_users))
 			return;
 
 		if (preg_match("/^config (set|get|del|list) (.*)$/mi", $msg, $matches)) {
-			$return = "FAIL!";
+			$return = "ERR.";
 
 			if ($matches[1] == "set" && preg_match("/^([^:]{1,}):(.*)$/mi", $matches[2], $submatches)) {
 				set_config($submatches[1], $submatches[2]);
@@ -38,40 +31,35 @@ class config {
 				if (get_config($submatches[1]) == $submatches[2])
 					$return = "ok.";
 				else
-					$return = "nicht ok.\n\ndas heisst FAIL!";
+					$return = "ERR.";
 			}
 			elseif ($matches[1] == "get") {
 				$return = get_config($matches[2]);
 
 				if ($return == "")
-					$return = "nix is da gewesen.";
+					$return = "-ENOENTRY";
 			}
 			elseif ($matches[1] == "del") {
 				del_config($matches[2]);
 				if (get_config($matches[2]) == "")
 					$return = "deleted";
 			}
-
-			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => $return
-			));
-		}
-		elseif (preg_match("/^config rehash$/i", $msg)) {
+		} elseif (preg_match("/^config rehash$/i", $msg)) {
 			$config = array ();
-			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => "ok."
+			$return = "ok."
 			));
-		}
-		elseif (preg_match("/^config list$/i", $msg)) {
+		} elseif (preg_match("/^config list$/i", $msg)) {
 			$return = "actual config:\n";
 			$result = make_sql_query("SELECT * FROM `config` ORDER BY `name`;");
 			while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
 				$return .= $row['name'] . ": " . $row['value'] . "\n";
 			}
-			$JABBER->SendMessage($from, "chat", NULL, array (
-				"body" => $return
-			));
 		}
+
+                if (!empty($return))
+                        $JABBER->SendMessage($from, "chat", NULL, array (
+                            "body" => $return
+                        ));
 	}
 
 	public static function trustHelp() {

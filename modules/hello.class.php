@@ -3,11 +3,6 @@ class hello {
 
 	public static function groupchat($message) {
 		global $JABBER;
-		global $trusted_users;
-		global $trust_users;
-		global $logdir;
-		global $rooms_log;
-		global $greetings;
 
 		$i = 0;
 		$timestamp = "";
@@ -43,11 +38,6 @@ class hello {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
-		global $trust_users;
-		global $logdir;
-		global $rooms_log;
-		global $greetings;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = explode("/", $from);

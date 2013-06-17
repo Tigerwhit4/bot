@@ -4,7 +4,6 @@ class rooms {
 	public static function normal($message) {
 		global $JABBER;
 		global $trusted_users;
-		global $trust_users;
 
 		$i = 0;
 		$timestamp = "";
@@ -62,9 +61,7 @@ class rooms {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
 		global $trust_users;
-		global $logdir;
 		global $rooms_log;
 
 		$i = 0;

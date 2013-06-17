@@ -10,13 +10,7 @@ class rss {
 
 	public static function cron($i) {
 		global $JABBER;
-		global $trusted_users;
-		global $trust_users;
-		global $logdir;
-		global $rooms_log;
-		global $rss_feeds;
 		global $rooms;
-		global $rss_receiver;
 
 		if (($i % 900) == 1) {
 			$feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
@@ -81,10 +75,7 @@ class rss {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
 		global $trust_users;
-		global $logdir;
-		global $rooms_log;
 		global $config;
 
 		$i = 0;

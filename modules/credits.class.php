@@ -2,11 +2,6 @@
 class credits {
 	public static function groupchat($message) {
 		global $JABBER;
-		global $trusted_users;
-		global $trust_users;
-		global $logdir;
-		global $rooms_log;
-		global $rooms;
 
 		$i = 0;
 

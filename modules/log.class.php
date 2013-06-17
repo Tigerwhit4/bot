@@ -3,8 +3,6 @@ class log {
 
 	public static function groupchat($message) {
 		global $JABBER;
-		global $trusted_users;
-		global $trust_users;
 		global $logdir;
 		global $rooms_log;
 		

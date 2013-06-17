@@ -3,13 +3,9 @@ class chucknorris {
 
 	public static function chat($message) {
 		global $JABBER;
-		global $trusted_users;
 		global $trust_users;
-		global $logdir;
-		global $rooms_log;
 		global $rooms;
 		
-		global $sql_connection;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from = explode("/", $from);

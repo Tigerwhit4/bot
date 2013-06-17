@@ -36,7 +36,7 @@ class wetter {
 				$url = "http://www.google.com/search?ie=UTF-8&oe=UTF-8&hl=de&q=wetter+bremen";
 
 			$inputfile = file_get_contents($url);
-			$head = extractstring($inputfile, '<div style="padding:5px;float:left">', '</div>');
+			$head = extractstring($inputfile, '<div style="padding:5px 5px 5px 0;float:left">', '</div>');
 			
 			if($head == "") {
 				$JABBER->SendMessage($from, "groupchat", NULL, array("body" => 'Du meinstest wohl !wetter china?'));

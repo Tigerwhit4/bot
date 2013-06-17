@@ -12,12 +12,25 @@ class messages {
 		global $JABBER;
 
 		while (true) {
-			if(!($socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP)))
-				die('socket_create() failed: ' . socket_strerror(socket_last_error()));
-			if(!socket_bind($socket, '::', self::$port))
-				die('socket_bind() failed: ' . socket_strerror(socket_last_error($socket)));
-			if(!socket_listen($socket))
-				die('socket_listen() failed: ' . socket_strerror(socket_last_error($socket)));
+			if(!($socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP))) {
+				echo 'socket_create() failed: ' . socket_strerror(socket_last_error()) . "\n";
+				sleep(60);
+				continue;
+			}
+			if(!socket_bind($socket, '::', self::$port)) {
+				echo 'socket_bind() failed: ' . socket_strerror(socket_last_error($socket)) . "\n";
+				@socket_shutdown($socket, 2);
+				@socket_close($socket);
+				sleep(60);
+				continue;
+			}
+			if(!socket_listen($socket)) {
+				echo 'socket_listen() failed: ' . socket_strerror(socket_last_error($socket)) . "\n";
+				@socket_shutdown($socket, 2);
+				@socket_close($socket);
+				sleep(60);
+				continue;
+			}
 
 			while ($client = socket_accept($socket)) {
 				$clientaddress = "";

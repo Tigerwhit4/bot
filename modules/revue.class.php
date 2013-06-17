@@ -10,7 +10,7 @@ class revue {
 		$timestamp = "";
 
 		while($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
+			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 

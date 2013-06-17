@@ -9,7 +9,7 @@ class rooms {
 		$timestamp = "";
 
 		while($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
+			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
@@ -60,17 +60,6 @@ class rooms {
 		global $JABBER;
 		global $trust_users;
 		global $rooms_log;
-
-		$i = 0;
-		$timestamp = "";
-
-		while($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
-			$i++;
-		}
-
-		if($timestamp)
-			return;
 
 		list($from, , $msg) = split_message($message);
 

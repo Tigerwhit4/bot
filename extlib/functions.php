@@ -134,11 +134,10 @@
 		$from = $JABBER->GetInfoFromMessageFrom($message);
 		$from_temp = explode("/", $from, 2);
 
-		if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat') {
+		if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
 			$user = "";
-		} else {
-			list($from, $resource) = $from_temp;
-		}
+		else
+			@list($from, $resource) = $from_temp;
 
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 

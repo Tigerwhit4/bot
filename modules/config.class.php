@@ -6,17 +6,6 @@ class config {
 		global $trust_users;
 		global $config;
 
-		$i = 0;
-		$timestamp = "";
-
-		while ($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
-			$i++;
-		}
-
-		if ($timestamp)
-			return;
-
 		list($from, , $msg) = split_message($message);
 
 		if (!in_array($from, $trust_users))

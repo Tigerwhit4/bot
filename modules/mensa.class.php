@@ -8,7 +8,7 @@ class mensa {
 		$timestamp = "";
 
 		while($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
+			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
@@ -59,13 +59,14 @@ class mensa {
 				if(is_array($auflauf) && isset($auflauf[1][0]) && $auflauf[1][0] == "Aufläufe")
 					$answer .= $auflauf[1][0] . ": " . $auflauf[2][0] . "; " . $auflauf[3][0] . "; " . $auflauf[4][0] . "; " . $auflauf[5][0] . "\n";
 
-				if(is_array($beilagen) && isset($beilagen[1][0]))
+				if(is_array($beilagen) && isset($beilagen[1][0])) {
                                         $answer .= "Beilagen: ";
 
-				foreach(explode("\n", $beilagen[1][0]) as $beilagen_line)
-					$answer .= strip_tags($beilagen_line) . "; ";
+				        foreach(explode("\n", $beilagen[1][0]) as $beilagen_line)
+						$answer .= strip_tags($beilagen_line) . "; ";
+				}
 
-				$answer .= trim($answer, "; ");
+				$answer = trim($answer, "; ");
 			} else
 				$answer = strip_tags($content);
 

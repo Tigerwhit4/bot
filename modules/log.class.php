@@ -12,7 +12,7 @@ class log {
 		$timestamp = "";
 
 		while($timestamp == "" && $i < 5) {
-			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
+			$timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
 			$i++;
 		}
 
@@ -20,14 +20,11 @@ class log {
 			return;
 
 		$from = $JABBER->GetInfoFromMessageFrom($message);
-		$from = explode("/", $from);
-		$from = $from[0];
+		@list($from, ) = explode("/", $from);
 		$msg = $JABBER->GetInfoFromMessageBody($message);
 
 		$from2 = $JABBER->GetInfoFromMessageFrom($message);
-		$from_temp = explode("/", $from2);
-		$from = $from_temp[0];
-		$user = $from_temp[1];
+		@list($from, $user) = explode("/", $from2);
 
 		$timestmp = date("Y-m-d H:i:s");
 		$logday2 = date("Y-m-d");

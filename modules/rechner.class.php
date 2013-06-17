@@ -11,6 +11,7 @@ class rechner {
 		global $rooms_log;
 
 		$i = 0;
+		$timestamp = "";
 
 		while($timestamp == "" && $i < 5) {
 			$timestamp = strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);

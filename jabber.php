@@ -37,7 +37,6 @@ $modules_init = array();
 $modules_shutdown = array();
 
 $topic = array();
-$trust_users = array();
 
 $handle = opendir("modules/");
 
@@ -105,7 +104,6 @@ function Handler_presence_subscribed($message) {
 
 function Handler_presence_available($message) {
   global $JABBER;
-  global $trust_users;
   global $trusted_users;
   global $rooms;
 
@@ -121,16 +119,10 @@ function Handler_presence_available($message) {
       if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid2)) . "')=0;") > 0)
         $fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid2)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
   }
-
-  if (in_array($jid, $trusted_users)) {
-    if (!in_array($jid, $trust_users))
-      $trust_users[] = $jid;
-  }
 }
 
 function Handler_presence_unavailable($message) {
   global $JABBER;
-  global $trust_users;
   global $trusted_users;
 
   $jid2 = strtolower($JABBER->GetInfoFromPresenceFrom($message));
@@ -140,17 +132,6 @@ function Handler_presence_unavailable($message) {
 
   if ($lines > 0)
     $fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid2)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
-
-  if (in_array($jid, $trusted_users)) {
-    if (in_array($jid, $trust_users)) {
-      foreach ($trust_users as $trust_user) {
-        if ($jid != $trust_user)
-          $trust_users2[] = $trust_user;
-      }
-
-      $trust_users = $trust_users2;
-    }
-  }
 }
 
 function Handler_presence_subscribe($message) {

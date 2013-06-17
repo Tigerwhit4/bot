@@ -45,9 +45,9 @@ class rooms {
 
   public static function chat($message, $from, $resource, $msg) {
     global $JABBER;
-    global $trust_users;
+    global $trusted_users;
 
-    if(!in_array($from, $trust_users))
+    if(!in_array($from, $trusted_users))
       return;
 
     if(preg_match("/^channel (add|del) (.*)$/", $msg, $matches)) {

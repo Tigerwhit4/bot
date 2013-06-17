@@ -3,7 +3,7 @@ class helper {
 
   public static function groupchat($message, $from, $user, $msg) {
     global $JABBER;
-    global $trust_users;
+    global $trusted_users;
     global $modules_groupchat;
 
     if($msg == "!help") {
@@ -16,7 +16,7 @@ class helper {
           $method = new ReflectionMethod($modul_name, "help");
           $help .= $method->invoke(NULL) . "\n";
         }
-        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("groupchat")) && (in_array($from, $trust_users))) {
+        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("groupchat")) && (in_array($from, $trusted_users))) {
           $method = new ReflectionMethod($modul_name, "trustHelp");
           $help .= $method->invoke(NULL) . "\n";
         }
@@ -28,7 +28,7 @@ class helper {
 
   public static function chat($message, $from, $resource, $msg) {
     global $JABBER;
-    global $trust_users;
+    global $trusted_users;
     global $modules_chat;
 
     if($msg == "help") {
@@ -41,7 +41,7 @@ class helper {
           $method = new ReflectionMethod($modul_name, "help");
           $help .= $method->invoke(NULL) . "\n";
         }
-        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("chat")) && (in_array($from, $trust_users))) {
+        if(($reflector->hasMethod("trustHelp")) && ($reflector->hasMethod("chat")) && (in_array($from, $trusted_users))) {
           $method = new ReflectionMethod($modul_name, "trustHelp");
           $help .= $method->invoke(NULL) . "\n";
         }

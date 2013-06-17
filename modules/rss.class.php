@@ -74,13 +74,13 @@ class rss {
   }
 
   public static function chat($message, $from, $resource, $msg) {
-    global $trust_users;
+    global $trusted_users;
     global $config;
 
     if (preg_match("#^((?:un)?subscribe)(?: ([^@\s]+@[^@\s]+))? (https?://.*)$#", $msg, $match) || preg_match("#^(list_subscriptions)(?: ([^@\s]+@[^@\s]+|all_by_(?:feed|user)))?()$#", $msg, $match)) {
       list(, $cmd, $jid, $url) = $match;
 
-      if (!empty($jid) && !in_array($from, $trust_users))
+      if (!empty($jid) && !in_array($from, $trusted_users))
         return;
 
       if (empty($jid))

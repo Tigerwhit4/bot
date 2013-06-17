@@ -2,10 +2,10 @@
 class config {
 
   public static function chat($message, $from, $resource, $msg) {
-    global $trust_users;
+    global $trusted_users;
     global $config;
 
-    if (!in_array($from, $trust_users))
+    if (!in_array($from, $trusted_users))
       return;
 
     if (preg_match("/^config (set|get|del) (.*)$/mi", $msg, $matches)) {

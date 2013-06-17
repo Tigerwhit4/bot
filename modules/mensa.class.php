@@ -6,6 +6,10 @@ class mensa {
 
     if($msg == "!hlmensa") {
       $json_in = get_url("http://home.universe-factory.net/neoraider/cgi-bin/mensahl/mensahl.py", true);
+
+      if(empty($json_in))
+        return;
+
       $json_arr = json_decode($json_in, true);
       $answer = "";
 

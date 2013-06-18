@@ -59,7 +59,6 @@ class rooms {
 	public static function chat($message) {
 		global $JABBER;
 		global $trust_users;
-		global $rooms_log;
 
 		list($from, , $msg) = split_message($message);
 
@@ -97,39 +96,10 @@ class rooms {
 			$channel = get_config("channel");
 			$JABBER->SendMessage($from, "chat", NULL, array("body" => $channel));
 		}
-
-		if(preg_match("/^channel_log (add|del) (.*)$/i", $msg, $matches)) {
-			if($matches[1] == "add") {
-				$channel_log = get_config("channel_log");
-				$channel_log = trim($channel_log . "\n" . $matches[2]);
-				del_config("channel_log");
-				set_config("channel_log", $channel_log);
-
-				$channel_log = get_config("channel_log");
-				$rooms_log = explode("\n", $channel_log);
-			} elseif($matches[1] == "del") {
-				$channel_log = get_config("channel_log");
-				$channel_log = explode("\n", $channel_log);
-
-				foreach($channel_log as $chan_log) {
-					if($chan_log != $matches[2])
-						$newchannel_log = trim($newchannel_log . "\n" . $chan_log);
-				}
-
-				del_config("channel_log");
-				set_config("channel_log", $newchannel_log);
-
-				$channel_log = get_config("channel_log");
-				$rooms_log = explode("\n", $channel_log);
-			}
-		} elseif($msg == "channel_log list") {
-			$channel_log = get_config("channel_log");
-			$JABBER->SendMessage($from, "chat", NULL, array("body" => $channel_log));
-		}
 	}
 
 	public static function trusthelp() {
-		return "channel add channel@server|del channel@server|list\nchannel_log add channel@server|del channel@server|list";
+		return "channel add channel@server|del channel@server|list";
 	}
 
 }

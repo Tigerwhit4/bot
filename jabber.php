@@ -31,8 +31,6 @@ if (!$error_reporting)
 else
 	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-$logday = "";
-
 $modules_groupchat = array();
 $modules_chat = array();
 $modules_normal = array();
@@ -93,9 +91,6 @@ $JABBER->log_filename = $jabber_log_filename;
 $JABBER->Connect() or die("Couldn't connect to jabber server!\n");
 $JABBER->SendAuth() or die("Jabber authentication failed!\n");
 $JABBER->SendPresence(NULL, NULL, $online_msg, NULL, $jabber_priority);
-
-$channel_log = get_config("channel_log");
-$rooms_log = explode("\n", $channel_log);
 
 $channel = get_config("channel");
 $rooms = explode("\n", $channel);

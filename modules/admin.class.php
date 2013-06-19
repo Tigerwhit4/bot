@@ -17,8 +17,8 @@ class admin {
         }
       }
     } elseif($msg == "die") {
-      $JABBER->Disconnect();
-      die("Sent to death by " . $from . "\n");
+      echo "Sent to death by " . $from . "\n";
+      shutdown();
     }
   }
 

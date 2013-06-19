@@ -60,9 +60,9 @@ class messages {
     die();
   }
 
-  private static function shutdown() {
+  public static function shutdown() {
     if (self::$thread->isAlive())
-      self::$thread->stop();
+      self::$thread->stop(SIGKILL, true);
   }
 }
 ?>

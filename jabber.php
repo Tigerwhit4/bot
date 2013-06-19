@@ -101,12 +101,11 @@ function Handler_presence_subscribed($message) {
 function Handler_presence_available($message) {
   global $JABBER;
   global $trusted_users;
-  global $rooms;
 
   $jid_with_resource = strtolower($JABBER->GetInfoFromPresenceFrom($message));
   $jid = $JABBER->StripJID($jid_with_resource);
 
-  if (($jid != $JABBER->username . '@' . $JABBER->server) && (!in_array($jid, $rooms))) {
+  if (($jid != $JABBER->username . '@' . $JABBER->server) && (!in_array($jid, get_rooms()))) {
     if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';") == 0)
       $fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
     elseif (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "')=0;") > 0)

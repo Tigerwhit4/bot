@@ -57,14 +57,20 @@ function extractstring($str, $start, $end) {
   return $str;
 }
 
+/**
+ * Returns exploded channel config set.
+ */
+function get_rooms() {
+  return explode("\n", get_config("channel"));
+}
+
 function split_message($message) {
-  global $rooms;
   global $JABBER;
 
   $from = $JABBER->GetInfoFromMessageFrom($message);
   $from_temp = explode('/', $from, 2);
 
-  if(in_array($from_temp[0], $rooms) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
+  if(in_array($from_temp[0], get_rooms()) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
     $user = '';
   else
     @ list($from, $resource) = $from_temp;

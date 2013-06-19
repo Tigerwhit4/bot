@@ -10,7 +10,6 @@ class rss {
 
   public static function cron($i) {
     global $JABBER;
-    global $rooms;
 
     if (($i % 900) == 1) {
       $feeds = make_sql_query("SELECT DISTINCT `rss_url` FROM `rss_subscriptions`;");
@@ -59,7 +58,7 @@ class rss {
           $result = make_sql_query("SELECT `jid` FROM `rss_subscriptions` WHERE `rss_url` = '" . make_sql_escape($rss_feed) . "';");
           while ($row = make_sql_fetch_assoc($result)) {
             $receiver = $row['jid'];
-            if (in_array($receiver, $rooms))
+            if (in_array($receiver, get_rooms()))
               $JABBER->SendMessage($receiver, "groupchat", NULL, array (
                 "body" => rtrim($answer)
               ));

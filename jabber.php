@@ -11,8 +11,10 @@ require "config.php";
 
 if (file_exists("extlib/dbabstraction/" . $sql_type . ".php"))
   require "extlib/dbabstraction/" . $sql_type . ".php";
-else
-  die("Please select a sql_type!\n");
+else {
+  error_log("Please select a sql_type!\n");
+  exit(1);
+}
 
 make_sql_ensure_connection();
 
@@ -20,11 +22,15 @@ require "extlib/class.jabber.php";
 require "extlib/Thread.php";
 require "extlib/functions.php";
 
-if (!Thread :: available())
-  die("Threads not supported!\n");
+if (!Thread :: available()) {
+  error_log("Threads not supported!\n");
+  exit(1);
+}
 
-if (!function_exists("curl_init"))
-  die("curl is necessary!\n");
+if (!function_exists("curl_init")) {
+  error_log("curl is necessary!\n");
+  exit(1);
+}
 
 ini_set("default_socket_timeout", 5);
 ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3");

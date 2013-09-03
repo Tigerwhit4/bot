@@ -1309,6 +1309,12 @@ class CJP_StandardConnector {
 	var $active_socket;
 
 	function OpenSocket($server, $port) {
+		if(function_exists('dns_get_record')) {
+			$jabber_servers = dns_get_record('_xmpp-client._tcp.' . $server, DNS_SRV);
+			if(count($jabber_servers) > 0)
+				$server = $jabber_servers[array_rand($jabber_servers, 1)]['target'];
+		}
+
 		if ($this->active_socket = fsockopen($server, $port)) {
 			socket_set_blocking($this->active_socket, 0);
 			socket_set_timeout($this->active_socket, 31536000);

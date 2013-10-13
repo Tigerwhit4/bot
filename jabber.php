@@ -38,7 +38,7 @@ ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.
 if (!$error_reporting)
   error_reporting(0);
 else
-  error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+  error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 $modules_groupchat = array();
 $modules_chat = array();

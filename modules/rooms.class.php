@@ -15,8 +15,10 @@ class rooms {
         $tmpvar = "";
         $tmpvar2 = "";
 
-        while(!is_array($tmpvar) && $i < 5)
-          $tmpvar = $invitearr[$i]['#']['invite'];
+        while(!is_array($tmpvar) && $i < 5) {
+          if(isset($invitearr[$i]['#']['invite']))
+            $tmpvar = $invitearr[$i]['#']['invite'];
+        }
 
         $i = 0;
 

@@ -30,7 +30,7 @@ class foobar {
 		} elseif(preg_match('/^!rev (.*)/i', $msg, $matches))
 			$answer = utf8_encode(strrev(utf8_decode($matches[1])));
 		elseif($msg == "cow")
-			$anwer = "moo!";
+			$answer = "moo!";
 		elseif($msg == "badger badger badger badger badger badger badger badger badger badger badger badger")
 			$answer = "mushroom mushroom!";
 		elseif($msg == "snake")

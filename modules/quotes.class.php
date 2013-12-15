@@ -21,20 +21,20 @@ class quotes {
       }
     } elseif(preg_match('/^!quote (.*)/is', $msg, $matches)) {
       if(is_numeric($matches[1])) {
-        $result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' AND `id` = '" . make_sql_escape($matches[1]) . "';");
+        $result = make_sql_query("SELECT `content` FROM `quotes` WHERE AND `id` = '" . make_sql_escape($matches[1]) . "';");
         list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
       } else {
         $answer = '';
-        $result = make_sql_query("SELECT `id` FROM `quotes` WHERE MATCH(content) AGAINST ('" . make_sql_escape($matches[1]) . "') AND `channel` = '" . make_sql_escape($from) . "';");
+        $result = make_sql_query("SELECT `id` FROM `quotes` WHERE MATCH(content) AGAINST ('" . make_sql_escape($matches[1]) . "');");
         while ($row = make_sql_fetch_array($result, MYSQL_ASSOC)) {
           $answer .= "#" . $row['id'] . " ";
         }
       }
     } elseif($msg == "!quote") {
       // get a random row from SQL - it's tricky!
-      $result = make_sql_query("SELECT FLOOR(RAND() * COUNT(*)) FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "';");
+      $result = make_sql_query("SELECT FLOOR(RAND() * COUNT(*)) FROM `quotes`;");
       list($offset) = make_sql_fetch_array($result, MYSQL_NUM);
-      $result = make_sql_query("SELECT `content` FROM `quotes` WHERE `channel` = '" . make_sql_escape($from) . "' LIMIT " . $offset . ", 1;");
+      $result = make_sql_query("SELECT `content` FROM `quotes` LIMIT " . $offset . ", 1;");
 
       list($answer) = make_sql_fetch_array($result, MYSQL_NUM);
     }
@@ -61,7 +61,7 @@ class quotes {
   }
 
   public static function help() {
-    return "!quote - shows random quote\n!addquote <pattern> - add <pattern> as quote\n!gbo - shows a quote of germanbash.org\n!bash - shows quote of bash.org\n!ibash - shows quote of ibash.de";
+    return "!quote - Zufallszitat\n!addquote <pattern> - fuegt <pattern> als Zitat hinzu\n!gbo - Zeigt ein Zitat von germanbash.org\n!bash - Zeigt ein Zitat von bash.org\n!ibash - Zeigt ein Zitat von ibash.de";
   }
 
 }

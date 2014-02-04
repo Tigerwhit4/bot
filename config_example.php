@@ -3,7 +3,9 @@ $error_reporting = false;
 
 $trusted_users = array();
 
+// sqlite, mysql or mysqli
 $sql_type = "sqlite";
+
 $sql_host = "localhost";
 $sql_user = "mysqluser";
 $sql_pass = "mysqlpw";

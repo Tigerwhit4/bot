@@ -54,7 +54,7 @@ $handle = opendir("modules/");
 while ($file = readdir($handle)) {
   if(is_dir("modules/" . $file) && file_exists("modules/" . $file . "/" . $file . ".class.php")) {
     $modul_name = $file;
-    require_once ("modules/" . $modul_name . ".class.php");
+    require_once ("modules/" . $modul_name . "/" . $modul_name . ".class.php");
     $reflector = new ReflectionClass($modul_name);
 
     if ($reflector->hasMethod("groupchat"))

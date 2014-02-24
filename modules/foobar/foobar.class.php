@@ -1,25 +1,7 @@
 <?php
 class foobar {
 
-  public static function groupchat($message) {
-    global $JABBER;
-
-    $i = 0;
-    $timestamp = "";
-
-    while($timestamp == "" && $i < 5) {
-      $timestamp = @strtotime($message["message"]["#"]["x"][$i]["@"]["stamp"]);
-      $i++;
-    }
-
-    if($timestamp)
-      return;
-
-    list($from, $user, $msg) = split_message($message);
-
-    if($JABBER->username == $user)
-      return;
-
+  public static function groupchat($message, $from, $user, $msg) {
     if(preg_match('/^!moo (.*)/i', $msg, $matches)) {
       if($matches[1] == $JABBER->username)
         $answer = "fuck you!";
@@ -41,7 +23,7 @@ class foobar {
       $answer = "Don't run! We are your friends!";
 
     if (!empty($answer))
-      $JABBER->SendMessage($from, "groupchat", NULL, array("body" => $answer));
+      return $answer;
   }
 
   public static function help() {

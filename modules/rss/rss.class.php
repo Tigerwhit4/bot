@@ -1,5 +1,5 @@
 <?php
-require_once "extlib/simplepie/simplepie.inc";
+require_once "extlib/simplepie/autoloader.php";
 
 class rss {
 

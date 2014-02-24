@@ -2,12 +2,9 @@
 <?php
 $config = array();
 
-if(!file_exists("config.php")) {
-  error_log("You have to copy config_example.php to config.php");
-  exit(1);
-}
-
-require "config.php";
+require_once "config.default.php";
+if(file_exists("config.php"))
+  require_once "config.php";
 
 if (file_exists("extlib/dbabstraction/" . $sql_type . ".php"))
   require "extlib/dbabstraction/" . $sql_type . ".php";

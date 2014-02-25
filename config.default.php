@@ -25,4 +25,6 @@ $jabber_enable_logging = true;
 $jabber_log_filename = "logs/xmpp.log";
 
 $online_msg = "foo";
+
+$command_prefix = "!";
 ?>

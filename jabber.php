@@ -61,36 +61,28 @@ while ($file = readdir($handle)) {
       $responsibilities = array();
     }
 
-    if (is_array($responsibilities)) {
-      if (array_key_exists('groupchat', $responsibilities)) {
-        foreach($responsibilities as $responsibility) {
-          if(is_array($responsibility)) {
-            foreach($responsibility as $sub_responsibility)
-              $modules_groupchat[$sub_responsibility] = $modul_name;
-          } else
-            $modules_groupchat[$responsibility] = $modul_name;
-        }
-      }
+    if (array_key_exists('groupchat', $responsibilities)) {
+      if (is_array($responsibilities['groupchat'])) {
+        foreach($responsibilities['groupchat'] as $command)
+          $modules_groupchat[$command] = $modul_name;
+      } else
+        $modules_groupchat[$responsibilities['groupchat']] = $modul_name;
+    }
 
-      if (array_key_exists('chat', $responsibilities)) {
-        foreach($responsibilities as $responsibility) {
-          if(is_array($responsibility)) {
-            foreach($responsibility as $sub_responsibility)
-              $modules_chat[$sub_responsibility] = $modul_name;
-          } else
-            $modules_chat[$responsibility] = $modul_name;
-        }
-      }
+    if (array_key_exists('chat', $responsibilities)) {
+      if (is_array($responsibility['chat'])) {
+        foreach($responsibilities['chat'] as $command)
+          $modules_chat[$command] = $modul_name;
+      } else
+        $modules_chat[$responsibilities['chat']] = $modul_name;
+    }
 
-      if (array_key_exists('normal', $responsibilities)) {
-        foreach($responsibilities as $responsibility) {
-          if(is_array($responsibility)) {
-            foreach($responsibility as $sub_responsibility)
-              $modules_normal[$sub_responsibility] = $modul_name;
-          } else
-            $modules_normal[$responsibility] = $modul_name;
-        }
-      }
+    if (array_key_exists('normal', $responsibilities)) {
+      if(is_array($responsibilities['normal'])) {
+        foreach($responsibilities['normal'] as $command)
+          $modules_normal[$command] = $modul_name;
+      } else
+        $modules_normal[$responsibilities['normal']] = $modul_name;
     }
 
     if ($reflector->hasMethod("cron"))
@@ -216,7 +208,7 @@ function Handler_message_normal($message) {
   if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
-  foreach ($modules_normal as $modul_name) {
+  foreach ($modules_normal as $trigger => $modul_name) {
     if($trigger != $command)
       continue;
 
@@ -239,7 +231,7 @@ function Handler_message_chat($message) {
   if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
-  foreach ($modules_chat as $modul_name) {
+  foreach ($modules_chat as $trigger => $modul_name) {
     if($trigger != $command)
       continue;
 

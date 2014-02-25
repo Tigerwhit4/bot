@@ -116,8 +116,17 @@ $JABBER->resource = $jabber_resource;
 
 $JABBER->enable_logging = $jabber_enable_logging;
 $JABBER->log_filename = $jabber_log_filename;
-$JABBER->Connect() or die("Couldn't connect to jabber server!\n");
-$JABBER->SendAuth() or die("Jabber authentication failed!\n");
+
+if(!$JABBER->Connect()) {
+  error_log("Couldn't connect to jabber server!\n");
+  exit(1);
+}
+
+if(!$JABBER->SendAuth()) {
+  error_log("Jabber authentication failed!\n");
+  exit(1);
+}
+
 $JABBER->SendPresence(NULL, NULL, $online_msg, NULL, $jabber_priority);
 
 foreach (explode("\n", get_config("channel")) as $room)

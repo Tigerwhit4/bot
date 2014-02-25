@@ -58,6 +58,7 @@ while ($file = readdir($handle)) {
     try {
       $responsibilities = $reflector->getProperty('responsibilities')->getValue();
     } catch (ReflectionException $e) {
+      $responsibilities = array();
     }
 
     if (is_array($responsibilities)) {
@@ -171,6 +172,7 @@ function Handler_presence_subscribe($message) {
 }
 
 function Handler_message_groupchat($message) {
+  global $command_prefix;
   global $modules_groupchat;
   global $JABBER;
 

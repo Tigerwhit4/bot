@@ -1,5 +1,6 @@
 <?php
 class rooms {
+  public static $responsibilities = array('chat' => 'channel');
 
   public static function normal($message, $from, $resource, $msg) {
     global $JABBER;

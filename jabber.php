@@ -51,17 +51,46 @@ $handle = opendir("modules/");
 while ($file = readdir($handle)) {
   if(is_dir("modules/" . $file) && file_exists("modules/" . $file . "/" . $file . ".class.php")) {
     $modul_name = $file;
+
     require_once ("modules/" . $modul_name . "/" . $modul_name . ".class.php");
     $reflector = new ReflectionClass($modul_name);
 
-    if ($reflector->hasMethod("groupchat"))
-      array_push($modules_groupchat, $modul_name);
+    try {
+      $responsibilities = $reflector->getProperty('responsibilities')->getValue();
+    } catch (ReflectionException $e) {
+    }
 
-    if ($reflector->hasMethod("chat"))
-      array_push($modules_chat, $modul_name);
+    if (is_array($responsibilities)) {
+      if (array_key_exists('groupchat', $responsibilities)) {
+        foreach($responsibilities as $responsibility) {
+          if(is_array($responsibility)) {
+            foreach($responsibility as $sub_responsibility)
+              $modules_groupchat[$sub_responsibility] = $modul_name;
+          } else
+            $modules_groupchat[$responsibility] = $modul_name;
+        }
+      }
 
-    if ($reflector->hasMethod("normal"))
-      array_push($modules_normal, $modul_name);
+      if (array_key_exists('chat', $responsibilities)) {
+        foreach($responsibilities as $responsibility) {
+          if(is_array($responsibility)) {
+            foreach($responsibility as $sub_responsibility)
+              $modules_chat[$sub_responsibility] = $modul_name;
+          } else
+            $modules_chat[$responsibility] = $modul_name;
+        }
+      }
+
+      if (array_key_exists('normal', $responsibilities)) {
+        foreach($responsibilities as $responsibility) {
+          if(is_array($responsibility)) {
+            foreach($responsibility as $sub_responsibility)
+              $modules_normal[$sub_responsibility] = $modul_name;
+          } else
+            $modules_normal[$responsibility] = $modul_name;
+        }
+      }
+    }
 
     if ($reflector->hasMethod("cron"))
       array_push($modules_cron, $modul_name);
@@ -157,11 +186,15 @@ function Handler_message_groupchat($message) {
     return;
 
   list($from, $user, $msg) = split_message($message);
+  list($command) = explode(' ', $msg);
 
   if($JABBER->username == $user)
     return;
 
-  foreach ($modules_groupchat as $modul_name) {
+  foreach ($modules_groupchat as $trigger => $modul_name) {
+    if($trigger != ltrim($command, $command_prefix))
+      continue;
+
     $answer = call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
 
     if(!empty($answer))
@@ -176,11 +209,15 @@ function Handler_message_normal($message) {
   global $JABBER;
 
   list($from, $resource, $msg) = split_message($message);
+  list($command) = explode(' ', $msg);
 
   if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
   foreach ($modules_normal as $modul_name) {
+    if($trigger != $command)
+      continue;
+
     $answer = call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
 
     if(!empty($answer))
@@ -195,11 +232,15 @@ function Handler_message_chat($message) {
   global $JABBER;
 
   list($from, $resource, $msg) = split_message($message);
+  list($command) = explode(' ', $msg);
 
   if ($from == $JABBER->username . '@' . $JABBER->server)
     return;
 
   foreach ($modules_chat as $modul_name) {
+    if($trigger != $command)
+      continue;
+
     $answer = call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
 
     if(!empty($answer))

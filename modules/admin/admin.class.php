@@ -1,5 +1,6 @@
 <?php
 class admin {
+  public static $responsibilities = array('chat' => array('say', 'die'));
 
   public static function chat($message, $from, $resource, $msg) {
     global $JABBER;

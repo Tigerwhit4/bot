@@ -1,5 +1,6 @@
 <?php
 class config {
+  public static $responsibilities = array('chat' => 'config');
 
   public static function chat($message, $from, $resource, $msg) {
     global $trusted_users;

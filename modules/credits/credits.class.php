@@ -1,11 +1,10 @@
 <?php
 class credits {
-  public static function groupchat($message, $from, $user, $msg) {
-    if($msg == "!credits") {
-        $answer = "Jabberbotframework: https://gitlab.planetcyborg.de/planetcyborg/yoda\n";
+  public static $responsibilities = array('groupchat' => 'credits');
 
-        return $answer;
-      }
+  public static function groupchat($message, $from, $user, $msg) {
+    if($msg == "!credits")
+      return "Jabberbotframework: https://gitlab.planetcyborg.de/planetcyborg/yoda\n";
   }
 
   public static function help() {

@@ -1,5 +1,6 @@
 <?php
 class helper {
+  public static $responsibilities = array('chat' => 'help', 'groupchat' => 'help');
 
   public static function groupchat($message, $from, $user, $msg) {
     global $JABBER;

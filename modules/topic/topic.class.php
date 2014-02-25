@@ -1,5 +1,6 @@
 <?php
 class topic {
+  public static $responsibilities = array('groupchat' => 'topic');
 
   public static function groupchat($message, $from, $user, $msg) {
     global $JABBER;

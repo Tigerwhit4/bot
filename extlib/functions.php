@@ -97,7 +97,6 @@ function get_url($url, $disable_v6 = false) {
 
     curl_setopt($ch, CURLOPT_URL, $url);
     return curl_exec($ch);
-    curl_close($ch);
   }
   elseif (exec("which wget")) return shell_exec("wget --no-check-certificate -O - -- " . escapeshellarg($url));
   else

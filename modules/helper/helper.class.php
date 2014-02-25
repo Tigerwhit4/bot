@@ -10,7 +10,7 @@ class helper {
     if($msg == "!help") {
       $answer = $JABBER->username . " knows these commands:\n";
 
-      foreach($modules_groupchat as $modul_name) {
+      foreach(array_unique($modules_groupchat) as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
         if($reflector->hasMethod("help") && $reflector->hasMethod("groupchat")) {
@@ -35,7 +35,7 @@ class helper {
     if($msg == "help") {
       $answer = $JABBER->username . " knows these commands:\n";
 
-      foreach($modules_chat as $modul_name) {
+      foreach(array_unique($modules_chat) as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
         if($reflector->hasMethod("help") && $reflector->hasMethod("chat")) {

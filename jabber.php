@@ -1,6 +1,7 @@
 #! /usr/bin/env php
 <?php
 $config = array();
+$command_prefix = '';
 
 require_once "config.default.php";
 if(file_exists("config.php"))

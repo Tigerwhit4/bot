@@ -71,7 +71,7 @@ while ($file = readdir($handle)) {
     }
 
     if (array_key_exists('chat', $responsibilities)) {
-      if (is_array($responsibility['chat'])) {
+      if (is_array($responsibilities['chat'])) {
         foreach($responsibilities['chat'] as $command)
           $modules_chat[$command] = $modul_name;
       } else

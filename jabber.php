@@ -179,7 +179,7 @@ function Handler_message_groupchat($message) {
   global $JABBER;
 
   $i = 0;
-  $timestamp = "";
+  $timestamp = '';
 
   while(empty($timestamp) && $i < 5) {
     $timestamp = @strtotime($message['message']['#']['x'][$i]['@']['stamp']);

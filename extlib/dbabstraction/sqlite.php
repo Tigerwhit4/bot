@@ -7,35 +7,39 @@ function make_sql_ensure_connection() {
   global $sql_connection;
 
   if(!$sql_connection) {
-    @ sqlite_close($sql_connection);
-    $sql_connection = sqlite_open($sql_host) || die();
+    $sql_connection = new SQLite3($sql_host);
+    if(!$sql_connection)
+      die($sqlite_error);
   }
 }
 
 function make_sql_close($sql_connection) {
   global $sql_connection;
 
-  sqlite_close($sql_connection);
+  $sql_connection->close();
 }
 
 function make_sql_query($query) {
   global $sql_connection;
 
   make_sql_ensure_connection();
-  return sqlite_query(&$sql_connection, $query);
+  return $sql_connection->query($query);
 }
 
 function make_sql_num_query($query) {
   global $sql_connection;
 
   make_sql_ensure_connection();
-  $result = sqlite_query($sql_connection, $query);
-  return sqlite_num_rows($result);
+  $result = $sql_connection->query($query);
+  $rows = $result->fetchArray();
+  return count($rows);
 }
 
 function make_sql_escape($query) {
+  global $sql_connection;
+
   make_sql_ensure_connection();
-  return sqlite_escape_string($query);
+  return $sql_connection->escapeString($query);
 }
 
 function make_sql_affected_rows() {

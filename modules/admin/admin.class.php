@@ -9,14 +9,14 @@ class admin {
     if (!in_array($from, $trusted_users))
       return;
 
-    if(preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) {
+    if (preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) {
       foreach(get_rooms() as $room) {
-        if($matches[1] == $room) {
+        if ($matches[1] == $room) {
           $JABBER->sendMessage($room, "groupchat", NULL, array("body" => $matches[2]));
           return;
         }
       }
-    } elseif($msg == "die") {
+    } elseif ($msg == "die") {
       echo "Sent to death by " . $from . "\n";
       shutdown();
     }

@@ -13,13 +13,16 @@ $sql_dtba = "mysqldb";
 
 $jabber_server = "jabberserver";
 $jabber_port = "5222";
+$jabber_ssl = false;
 $jabber_username = "jabberuser";
 $jabber_password = "jabberpw";
 
-$jabber_version_name = "foobot";
-$jabber_version_version = "0.01";
-$jabber_version_os = "funix";
-$jabber_resource = "foobar";
+$uname = posix_uname();
+
+$jabber_version_name = "Yoda Jabber/MUC bot";
+$jabber_version_version = shell_exec('git rev-parse HEAD');
+$jabber_version_os = $uname['sysname'];
+$jabber_resource = $uname['nodename'];
 $jabber_priority = 5;
 $jabber_enable_logging = true;
 $jabber_log_filename = "logs/xmpp.log";

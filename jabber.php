@@ -4,7 +4,7 @@ $config = array();
 $command_prefix = '';
 
 require_once "config.default.php";
-if(file_exists("config.php"))
+if (file_exists("config.php"))
   require_once "config.php";
 
 if (file_exists("extlib/dbabstraction/" . $sql_type . ".php"))
@@ -16,9 +16,9 @@ else {
 
 make_sql_ensure_connection();
 
-require "extlib/class.jabber.php";
-require "extlib/Thread.php";
-require "extlib/functions.php";
+require_once "extlib/class.jabber.php";
+require_once "extlib/Thread.php";
+require_once "extlib/functions.php";
 
 if (!Thread :: available()) {
   error_log("Threads not supported!\n");
@@ -31,7 +31,7 @@ if (!function_exists("curl_init")) {
 }
 
 ini_set("default_socket_timeout", 5);
-ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3");
+ini_set("user_agent", $user_agent);
 
 if (!$error_reporting)
   error_reporting(0);
@@ -63,26 +63,26 @@ while ($file = readdir($handle)) {
     }
 
     if (array_key_exists('groupchat', $responsibilities)) {
-      if (is_array($responsibilities['groupchat'])) {
+      if (is_array($responsibilities['groupchat']))
         foreach($responsibilities['groupchat'] as $command)
           $modules_groupchat[$command] = $modul_name;
-      } else
+      else
         $modules_groupchat[$responsibilities['groupchat']] = $modul_name;
     }
 
     if (array_key_exists('chat', $responsibilities)) {
-      if (is_array($responsibilities['chat'])) {
+      if (is_array($responsibilities['chat']))
         foreach($responsibilities['chat'] as $command)
           $modules_chat[$command] = $modul_name;
-      } else
+      else
         $modules_chat[$responsibilities['chat']] = $modul_name;
     }
 
     if (array_key_exists('normal', $responsibilities)) {
-      if(is_array($responsibilities['normal'])) {
+      if(is_array($responsibilities['normal']))
         foreach($responsibilities['normal'] as $command)
           $modules_normal[$command] = $modul_name;
-      } else
+      else
         $modules_normal[$responsibilities['normal']] = $modul_name;
     }
 
@@ -99,12 +99,11 @@ while ($file = readdir($handle)) {
 
 closedir($handle);
 
-// cleanup status table
-make_sql_query("UPDATE `status` SET `status` = 0, `res` = '';");
-
 $JABBER = new Jabber;
 $JABBER->server = $jabber_server;
 $JABBER->port = $jabber_port;
+$JABBER->ssl = $jabber_ssl;
+$JABBER->custom_host = $jabber_custom_host;
 $JABBER->username = $jabber_username;
 $JABBER->password = $jabber_password;
 
@@ -139,29 +138,11 @@ function Handler_presence_subscribed($message) {
 }
 
 function Handler_presence_available($message) {
-  global $JABBER;
-  global $trusted_users;
-
-  $jid_with_resource = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-  $jid = $JABBER->StripJID($jid_with_resource);
-
-  if (($jid != $JABBER->username . '@' . $JABBER->server) && (!in_array($jid, get_rooms()))) {
-    if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "';") == 0)
-      $fp = make_sql_query("INSERT INTO `status` ( `id` , `jid` , `status` ) VALUES (NULL , '" . make_sql_escape($jid) . "', '1');");
-    elseif (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND INSTR(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "')=0;") > 0)
-      $fp = make_sql_query("UPDATE `status` SET `status` = `status`+1, `res`=CONCAT(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "') WHERE `jid` ='" . make_sql_escape($jid) . "';");
-  }
+  return true;
 }
 
 function Handler_presence_unavailable($message) {
-  global $JABBER;
-  global $trusted_users;
-
-  $jid_with_resource = strtolower($JABBER->GetInfoFromPresenceFrom($message));
-  $jid = $JABBER->StripJID($jid_with_resource);
-
-  if (make_sql_num_query("SELECT * FROM `status` WHERE `jid` = '" . make_sql_escape($jid) . "' AND `status` > 0 AND INSTR(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "') > 0;") > 0)
-    $fp = make_sql_query("UPDATE `status` SET `status` = `status`-1, `res`=REPLACE(`res`, '" . make_sql_escape(md5($jid_with_resource)) . "', '') WHERE `jid` ='" . make_sql_escape($jid) . "';");
+  return true;
 }
 
 function Handler_presence_subscribe($message) {

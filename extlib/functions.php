@@ -8,9 +8,6 @@ function shutdown() {
   global $JABBER;
   global $sql_connection;
 
-  // cleanup status table
-  make_sql_query("UPDATE `status` SET `status` = 0, `res` = '';");
-
   foreach ($modules_shutdown as $modul_name)
     call_user_func(array($modul_name, 'shutdown'));
 

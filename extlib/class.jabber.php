@@ -124,6 +124,8 @@ class Jabber {
 	function Jabber() {
 		$this->server = "localhost";
 		$this->port = "5222";
+		$this->ssl = false;
+		$this->custom_host = '';
 
 		$this->username = "larry";
 		$this->password = "curly";
@@ -171,7 +173,7 @@ class Jabber {
 		$this->_create_logfile();
 		$this->CONNECTOR = new $this->connection_class;
 
-		if ($this->CONNECTOR->OpenSocket($this->server, $this->port)) {
+		if ($this->CONNECTOR->OpenSocket($this->server, $this->port, $this->ssl, $this->custom_host)) {
 			$this->SendPacket("<?xml version='1.0' encoding='UTF-8' ?>\n");
 			$this->SendPacket("<stream:stream to='{$this->server}' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>\n");
 
@@ -1308,12 +1310,18 @@ class MakeXML extends Jabber {
 class CJP_StandardConnector {
 	var $active_socket;
 
-	function OpenSocket($server, $port) {
+	function OpenSocket($server, $port, $ssl = false, $custom_host = '') {
 		if(function_exists('dns_get_record')) {
 			$jabber_servers = dns_get_record('_xmpp-client._tcp.' . $server, DNS_SRV);
 			if(count($jabber_servers) > 0)
 				$server = $jabber_servers[array_rand($jabber_servers, 1)]['target'];
 		}
+
+		if ($ssl == true)
+			$server = 'ssl://' . $server;
+
+		if ($custom_host != '')
+			$server = $custom_host;
 
 		if ($this->active_socket = fsockopen($server, $port)) {
 			socket_set_blocking($this->active_socket, 0);

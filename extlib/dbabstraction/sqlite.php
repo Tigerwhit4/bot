@@ -1,13 +1,10 @@
 <?php
+
 function make_sql_ensure_connection() {
-  global $sql_host;
-  global $sql_user;
-  global $sql_pass;
-  global $sql_dtba;
-  global $sql_connection;
+  global $sql_hostname, $sql_username, $sql_password, $sql_database, $sql_connection;
 
   if(!$sql_connection) {
-    $sql_connection = new SQLite3($sql_host);
+    $sql_connection = new SQLite3($sql_hostname);
     if(!$sql_connection)
       die($sqlite_error);
   }
@@ -48,7 +45,7 @@ function make_sql_affected_rows() {
 
 function make_sql_fetch_array($result, $result_type = NULL) {
   if(isset($result_type))
-    str_replace("MYSQL", "SQLITE", $result_type);
+    str_replace('MYSQL', 'SQLITE', $result_type);
 
   return sqlite_fetch_array($result, "'" . $result_type . "'");
 }
@@ -60,4 +57,5 @@ function make_sql_fetch_row($result) {
 function make_sql_fetch_assoc($result) {
   return sqlite_fetch_assoc($result);
 }
+
 ?>

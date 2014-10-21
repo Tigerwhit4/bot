@@ -1,107 +1,31 @@
--- phpMyAdmin SQL Dump
--- version 4.0.4.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 25. Feb 2014 um 13:43
--- Server Version: 5.6.12
--- PHP-Version: 5.5.3
+create table `config` (
+  `id` int(11) not null,
+  `name` text not null,
+  `value` text not null,
+  primary key (`id`)
+);
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+create table `quotes` (
+  `id` int(5) not null,
+  `content` text not null,
+  `channel` varchar(50) not null,
+  `date` datetime not null,
+  primary key (`id`),
+  fulltext key `content` (`content`)
+);
 
+create table `rss_feeds` (
+  `id` int(5) unsigned not null,
+  `rss_url` text not null,
+  `title` text not null,
+  `date` datetime not null,
+  primary key (`id`)
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Datenbank: `yoda`
---
-CREATE DATABASE IF NOT EXISTS `yoda` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `yoda`;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `config`
---
-
-CREATE TABLE IF NOT EXISTS `config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
-
---
--- Daten für Tabelle `config`
---
-
-INSERT INTO `config` (`id`, `name`, `value`) VALUES
-(7, 'hello_greetings', 'hey|hallo|moin|hi|tach|guten tag|wb|webe|guten morgen|möge die macht mit euch sein'),
-(8, 'invectives', 'Arsch|Ficken|Idiot|Dummkopf|Fuck|Shit'),
-(82, 'message_tokens', '{}'),
-(93, 'channel', 'milliways@muc.planetcyborg.de');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `quotes`
---
-
-CREATE TABLE IF NOT EXISTS `quotes` (
-  `id` int(5) NOT NULL AUTO_INCREMENT,
-  `content` text NOT NULL,
-  `channel` varchar(50) NOT NULL,
-  `date` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  FULLTEXT KEY `content` (`content`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rss_feeds`
---
-
-CREATE TABLE IF NOT EXISTS `rss_feeds` (
-  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-  `rss_url` text NOT NULL,
-  `title` text NOT NULL,
-  `date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `rss_subscriptions`
---
-
-CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
-  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-  `rss_url` text NOT NULL,
-  `jid` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `rss_url` (`rss_url`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `status`
---
-
-CREATE TABLE IF NOT EXISTS `status` (
-  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-  `jid` varchar(50) NOT NULL,
-  `status` int(5) NOT NULL,
-  `res` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+create table `rss_subscriptions` (
+  `id` int(5) unsigned not null,
+  `rss_url` text collate latin1_general_ci not null,
+  `jid` text collate latin1_general_ci not null,
+  primary key (`id`),
+  key `rss_url` (`rss_url`(255))
+);

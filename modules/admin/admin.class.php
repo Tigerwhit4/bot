@@ -1,4 +1,5 @@
 <?php
+
 class admin {
   public static $responsibilities = array('chat' => array('say', 'die'));
 
@@ -12,11 +13,11 @@ class admin {
     if (preg_match("/^say ([^:]*):(.*)$/i", $msg, $matches)) {
       foreach(get_rooms() as $room) {
         if ($matches[1] == $room) {
-          $JABBER->sendMessage($room, "groupchat", NULL, array("body" => $matches[2]));
+          $JABBER->sendMessage($room, 'groupchat', NULL, array('body' => $matches[2]));
           return;
         }
       }
-    } elseif ($msg == "die") {
+    } elseif ($msg == 'die') {
       echo "Sent to death by " . $from . "\n";
       shutdown();
     }
@@ -27,4 +28,5 @@ class admin {
   }
 
 }
+
 ?>

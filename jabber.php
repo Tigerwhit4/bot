@@ -1,14 +1,15 @@
 #! /usr/bin/env php
 <?php
+
 $config = array();
 $command_prefix = '';
 
-require_once "config.default.php";
-if (file_exists("config.php"))
-  require_once "config.php";
+require_once realpath(__DIR__ . '/config.default.php');
+if (file_exists(realpath(__DIR__ . '/config.php')))
+  require_once realpath(__DIR__ . '/config.php');
 
-if (file_exists("extlib/dbabstraction/" . $sql_type . ".php"))
-  require "extlib/dbabstraction/" . $sql_type . ".php";
+if (file_exists(realpath(__DIR__ . '/extlib/dbabstraction/' . $sql_type . '.php')))
+  require_once realpath(__DIR__ . '/extlib/dbabstraction/' . $sql_type . '.php');
 else {
   error_log("Please select a sql_type!\n");
   exit(1);
@@ -16,22 +17,22 @@ else {
 
 make_sql_ensure_connection();
 
-require_once "extlib/class.jabber.php";
-require_once "extlib/Thread.php";
-require_once "extlib/functions.php";
+require_once realpath(__DIR__ . '/extlib/class.jabber.php');
+require_once realpath(__DIR__ . '/extlib/Thread.php');
+require_once realpath(__DIR__ . '/extlib/functions.php');
 
 if (!Thread :: available()) {
   error_log("Threads not supported!\n");
   exit(1);
 }
 
-if (!function_exists("curl_init")) {
+if (!function_exists('curl_init')) {
   error_log("curl is necessary!\n");
   exit(1);
 }
 
-ini_set("default_socket_timeout", 5);
-ini_set("user_agent", $user_agent);
+ini_set('default_socket_timeout', 5);
+ini_set('user_agent', $user_agent);
 
 if (!$error_reporting)
   error_reporting(0);
@@ -47,13 +48,13 @@ $modules_shutdown = array();
 
 $topic = array();
 
-$handle = opendir("modules/");
+$handle = opendir(realpath(__DIR__ . '/modules/'));
 
 while ($file = readdir($handle)) {
-  if(is_dir("modules/" . $file) && file_exists("modules/" . $file . "/" . $file . ".class.php")) {
+  if(is_dir(realpath(__DIR__ . '/modules/' . $file)) && file_exists(realpath(__DIR__ . '/modules/' . $file . '/' . $file . '.class.php'))) {
     $modul_name = $file;
 
-    require_once ("modules/" . $modul_name . "/" . $modul_name . ".class.php");
+    require_once realpath(__DIR__ . '/modules/' . $modul_name . '/' . $modul_name . '.class.php');
     $reflector = new ReflectionClass($modul_name);
 
     try {
@@ -86,13 +87,13 @@ while ($file = readdir($handle)) {
         $modules_normal[$responsibilities['normal']] = $modul_name;
     }
 
-    if ($reflector->hasMethod("cron"))
+    if ($reflector->hasMethod('cron'))
       array_push($modules_cron, $modul_name);
 
-    if ($reflector->hasMethod("init"))
+    if ($reflector->hasMethod('init'))
       array_push($modules_init, $modul_name);
 
-    if ($reflector->hasMethod("shutdown"))
+    if ($reflector->hasMethod('shutdown'))
       array_push($modules_shutdown, $modul_name);
   }
 }
@@ -128,8 +129,8 @@ if(!$JABBER->SendAuth()) {
 
 $JABBER->SendPresence(NULL, NULL, $online_msg, NULL, $jabber_priority);
 
-foreach (explode("\n", get_config("channel")) as $room)
-  $JABBER->SendPresence(NULL, $room . "/" . $JABBER->username, NULL, NULL, NULL);
+foreach (explode("\n", get_config('channel')) as $room)
+  $JABBER->SendPresence(NULL, $room . '/' . $JABBER->username, NULL, NULL, NULL);
 
 function Handler_presence_subscribed($message) {
   global $JABBER;
@@ -183,7 +184,7 @@ function Handler_message_groupchat($message) {
     $answer = call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
 
     if(!empty($answer))
-      $JABBER->SendMessage($from, "groupchat", NULL, array ("body" => $answer));
+      $JABBER->SendMessage($from, 'groupchat', NULL, array ('body' => $answer));
 
     unset($answer);
   }
@@ -206,7 +207,7 @@ function Handler_message_normal($message) {
     $answer = call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
 
     if(!empty($answer))
-      $JABBER->SendMessage($from . '/' . $resource, "normal", NULL, array ("body" => $answer));
+      $JABBER->SendMessage($from . '/' . $resource, 'normal', NULL, array ('body' => $answer));
 
     unset($answer);
   }
@@ -229,7 +230,7 @@ function Handler_message_chat($message) {
     $answer = call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
 
     if(!empty($answer))
-      $JABBER->SendMessage($from . '/' . $resource, "chat", NULL, array ("body" => $answer));
+      $JABBER->SendMessage($from . '/' . $resource, 'chat', NULL, array ('body' => $answer));
 
     unset($answer);
   }

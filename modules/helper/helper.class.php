@@ -1,4 +1,5 @@
 <?php
+
 class helper {
   public static $responsibilities = array('chat' => 'help', 'groupchat' => 'help');
 
@@ -7,18 +8,18 @@ class helper {
     global $trusted_users;
     global $modules_groupchat;
 
-    if ($msg == "!help") {
+    if ($msg == '!help') {
       $answer = $JABBER->username . " knows these commands:\n";
 
       foreach (array_unique($modules_groupchat) as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
-        if ($reflector->hasMethod("help") && $reflector->hasMethod("groupchat")) {
-          $method = new ReflectionMethod($modul_name, "help");
+        if ($reflector->hasMethod('help') && $reflector->hasMethod('groupchat')) {
+          $method = new ReflectionMethod($modul_name, 'help');
           $answer .= $method->invoke(NULL) . "\n";
         }
-        if ($reflector->hasMethod("trustHelp") && $reflector->hasMethod("groupchat") && in_array($from, $trusted_users)) {
-          $method = new ReflectionMethod($modul_name, "trustHelp");
+        if ($reflector->hasMethod('trustHelp') && $reflector->hasMethod('groupchat') && in_array($from, $trusted_users)) {
+          $method = new ReflectionMethod($modul_name, 'trustHelp');
           $answer .= $method->invoke(NULL) . "\n";
         }
       }
@@ -32,19 +33,19 @@ class helper {
     global $trusted_users;
     global $modules_chat;
 
-    if($msg == "help") {
+    if($msg == 'help') {
       $answer = $JABBER->username . " knows these commands:\n";
 
       foreach(array_unique($modules_chat) as $modul_name) {
         $reflector = new ReflectionClass($modul_name);
 
-        if ($reflector->hasMethod("help") && $reflector->hasMethod("chat")) {
-          $method = new ReflectionMethod($modul_name, "help");
+        if ($reflector->hasMethod('help') && $reflector->hasMethod('chat')) {
+          $method = new ReflectionMethod($modul_name, 'help');
           $answer .= $method->invoke(NULL) . "\n";
         }
 
-        if ($reflector->hasMethod("trustHelp") && $reflector->hasMethod("chat") && in_array($from, $trusted_users)) {
-          $method = new ReflectionMethod($modul_name, "trustHelp");
+        if ($reflector->hasMethod('trustHelp') && $reflector->hasMethod('chat') && in_array($from, $trusted_users)) {
+          $method = new ReflectionMethod($modul_name, 'trustHelp');
           $answer .= $method->invoke(NULL) . "\n";
         }
       }
@@ -58,4 +59,5 @@ class helper {
   }
 
 }
+
 ?>

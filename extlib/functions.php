@@ -1,12 +1,10 @@
 <?php
 
 /**
- * Yoda shutdown
+ * Shutdown
  */
 function shutdown() {
-  global $modules_shutdown;
-  global $JABBER;
-  global $sql_connection;
+  global $JABBER, $modules_shutdown, $sql_connection;
 
   foreach ($modules_shutdown as $modul_name)
     call_user_func(array($modul_name, 'shutdown'));
@@ -58,7 +56,7 @@ function extractstring($str, $start, $end) {
  * Returns exploded channel config set.
  */
 function get_rooms() {
-  return explode("\n", get_config("channel"));
+  return explode("\n", get_config('channel'));
 }
 
 function split_message($message) {
@@ -78,7 +76,7 @@ function split_message($message) {
 }
 
 function get_url($url, $disable_v6 = false) {
-  if (function_exists("curl_init")) {
+  if (function_exists('curl_init')) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_USERAGENT, ini_get('user_agent'));
@@ -89,14 +87,15 @@ function get_url($url, $disable_v6 = false) {
     if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {
       curl_setopt($ch, CURLOPT_USERPWD, $matches[2] . ':' . $matches[3]);
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-      $url = $matches[1] . "://" . $matches[4];
+      $url = $matches[1] . '://' . $matches[4];
     }
 
     curl_setopt($ch, CURLOPT_URL, $url);
     return curl_exec($ch);
   }
-  elseif (exec("which wget")) return shell_exec("wget --no-check-certificate -O - -- " . escapeshellarg($url));
+  elseif (exec('which wget')) return shell_exec('wget --no-check-certificate -O - -- ' . escapeshellarg($url));
   else
     return file_get_contents($url);
 }
+
 ?>

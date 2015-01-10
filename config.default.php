@@ -28,6 +28,8 @@ $jabber_priority = 5;
 $jabber_enable_logging = true;
 $jabber_log_filename = 'logs/xmpp.log';
 
+$config['user_agent'] = $jabber_version_name;
+
 $online_msg = 'foo';
 
 $command_prefix = '!';

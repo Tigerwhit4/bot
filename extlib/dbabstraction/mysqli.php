@@ -1,5 +1,11 @@
 <?php
 
+function sql_error() {
+  global $sql_connection;
+
+  return $sql_connection->error;
+}
+
 function make_sql_ensure_connection() {
   global $sql_hostname, $sql_username, $sql_password, $sql_database, $sql_connection;
 
@@ -60,10 +66,6 @@ function make_sql_fetch_array(mysqli_result $result, $result_type = NULL) {
     return $result->fetch_array(MYSQLI_NUM);
   else
     return $result->fetch_array($result_type);
-}
-
-function make_sql_fetch_row(mysqli_result $result) {
-  return $result->fetch_row();
 }
 
 function make_sql_fetch_assoc(mysqli_result $result) {

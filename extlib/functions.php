@@ -17,7 +17,7 @@ function shutdown() {
 function get_config($name) {
   global $config;
 
-  if(isset($config[$name]))
+  if (isset($config[$name]))
     return $config[$name];
 
   $result = make_sql_query("SELECT * FROM `config` WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;");
@@ -30,10 +30,10 @@ function get_config($name) {
 function set_config($name, $value) {
   global $config;
 
-  if(get_config($name) == '')
-    $result = make_sql_query("INSERT INTO `config` SET `name` = '" . make_sql_escape($name) . "', `value` = '" . make_sql_escape($value) . "';") || die(mysql_error());
+  if (get_config($name) == '')
+    $result = make_sql_query("INSERT INTO `config`(`name`, `value`) VALUES ('" . make_sql_escape($name) . "', '" . make_sql_escape($value) . "')") || die(sql_error());
   else
-    $result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "' LIMIT 1;") || die(mysql_error());
+    $result = make_sql_query("UPDATE `config` SET `value` = '" . make_sql_escape($value) . "' WHERE `name` = '" . make_sql_escape($name) . "'") || die(sql_error());
 
   $config[$name] = $value;
 }
@@ -65,7 +65,7 @@ function split_message($message) {
   $from = $JABBER->GetInfoFromMessageFrom($message);
   $from_temp = explode('/', $from, 2);
 
-  if(in_array($from_temp[0], get_rooms()) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
+  if (in_array($from_temp[0], get_rooms()) && $JABBER->GetInfoFromMessageType($message) != 'groupchat')
     $user = '';
   else
     @ list($from, $resource) = $from_temp;
@@ -81,7 +81,7 @@ function get_url($url, $disable_v6 = false) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_USERAGENT, ini_get('user_agent'));
 
-    if($disable_v6 == true)
+    if ($disable_v6 == true)
       curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
     if (preg_match('/^(.*):\/\/(.*):(.*)@(.*)$/', $url, $matches)) {

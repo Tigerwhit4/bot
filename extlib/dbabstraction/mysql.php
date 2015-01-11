@@ -1,5 +1,9 @@
 <?php
 
+function sql_error() {
+  return mysql_error();
+}
+
 function make_sql_ensure_connection() {
   global $sql_hostname, $sql_username, $sql_password, $sql_database, $sql_connection;
 
@@ -39,10 +43,6 @@ function make_sql_affected_rows() {
 
 function make_sql_fetch_array($result, $result_type = NULL) {
   return mysql_fetch_array($result, $result_type);
-}
-
-function make_sql_fetch_row($result) {
-  return mysql_fetch_row($result);
 }
 
 function make_sql_fetch_assoc($result) {

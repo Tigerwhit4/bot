@@ -32,7 +32,7 @@ if (!function_exists('curl_init')) {
 }
 
 ini_set('default_socket_timeout', 5);
-ini_set('user_agent', $user_agent);
+ini_set('user_agent', $config['user_agent']);
 
 if (!$error_reporting)
   error_reporting(0);
@@ -51,7 +51,8 @@ $topic = array();
 $handle = opendir(realpath(__DIR__ . '/modules/'));
 
 while ($file = readdir($handle)) {
-  if(is_dir(realpath(__DIR__ . '/modules/' . $file)) && file_exists(realpath(__DIR__ . '/modules/' . $file . '/' . $file . '.class.php'))) {
+  if (is_dir(realpath(__DIR__ . '/modules/' . $file)) &&
+      file_exists(realpath(__DIR__ . '/modules/' . $file . '/' . $file . '.class.php'))) {
     $modul_name = $file;
 
     require_once realpath(__DIR__ . '/modules/' . $modul_name . '/' . $modul_name . '.class.php');
@@ -65,7 +66,7 @@ while ($file = readdir($handle)) {
 
     if (array_key_exists('groupchat', $responsibilities)) {
       if (is_array($responsibilities['groupchat']))
-        foreach($responsibilities['groupchat'] as $command)
+        foreach ($responsibilities['groupchat'] as $command)
           $modules_groupchat[$command] = $modul_name;
       else
         $modules_groupchat[$responsibilities['groupchat']] = $modul_name;
@@ -73,7 +74,7 @@ while ($file = readdir($handle)) {
 
     if (array_key_exists('chat', $responsibilities)) {
       if (is_array($responsibilities['chat']))
-        foreach($responsibilities['chat'] as $command)
+        foreach ($responsibilities['chat'] as $command)
           $modules_chat[$command] = $modul_name;
       else
         $modules_chat[$responsibilities['chat']] = $modul_name;
@@ -81,7 +82,7 @@ while ($file = readdir($handle)) {
 
     if (array_key_exists('normal', $responsibilities)) {
       if(is_array($responsibilities['normal']))
-        foreach($responsibilities['normal'] as $command)
+        foreach ($responsibilities['normal'] as $command)
           $modules_normal[$command] = $modul_name;
       else
         $modules_normal[$responsibilities['normal']] = $modul_name;
@@ -117,12 +118,12 @@ $JABBER->resource = $jabber_resource;
 $JABBER->enable_logging = $jabber_enable_logging;
 $JABBER->log_filename = $jabber_log_filename;
 
-if(!$JABBER->Connect()) {
+if (!$JABBER->Connect()) {
   error_log("Couldn't connect to jabber server!\n");
   exit(1);
 }
 
-if(!$JABBER->SendAuth()) {
+if (!$JABBER->SendAuth()) {
   error_log("Jabber authentication failed!\n");
   exit(1);
 }
@@ -163,7 +164,7 @@ function Handler_message_groupchat($message) {
   $i = 0;
   $timestamp = '';
 
-  while(empty($timestamp) && $i < 5) {
+  while (empty($timestamp) && $i < 5) {
     $timestamp = @strtotime($message['message']['#']['x'][$i]['@']['stamp']);
     $i++;
   }
@@ -174,7 +175,7 @@ function Handler_message_groupchat($message) {
   list($from, $user, $msg) = split_message($message);
   list($command) = explode(' ', $msg);
 
-  if($JABBER->username == $user)
+  if ($JABBER->username == $user)
     return;
 
   foreach ($modules_groupchat as $trigger => $modul_name) {
@@ -183,7 +184,7 @@ function Handler_message_groupchat($message) {
 
     $answer = call_user_func_array(array($modul_name, 'groupchat'), array($message, $from, $user, $msg));
 
-    if(!empty($answer))
+    if (!empty($answer))
       $JABBER->SendMessage($from, 'groupchat', NULL, array ('body' => $answer));
 
     unset($answer);
@@ -201,12 +202,12 @@ function Handler_message_normal($message) {
     return;
 
   foreach ($modules_normal as $trigger => $modul_name) {
-    if($trigger != $command)
+    if ($trigger != $command)
       continue;
 
     $answer = call_user_func_array(array($modul_name, 'normal'), array($message, $from, $resource, $msg));
 
-    if(!empty($answer))
+    if (!empty($answer))
       $JABBER->SendMessage($from . '/' . $resource, 'normal', NULL, array ('body' => $answer));
 
     unset($answer);
@@ -224,12 +225,12 @@ function Handler_message_chat($message) {
     return;
 
   foreach ($modules_chat as $trigger => $modul_name) {
-    if($trigger != $command)
+    if ($trigger != $command)
       continue;
 
     $answer = call_user_func_array(array($modul_name, 'chat'), array($message, $from, $resource, $msg));
 
-    if(!empty($answer))
+    if (!empty($answer))
       $JABBER->SendMessage($from . '/' . $resource, 'chat', NULL, array ('body' => $answer));
 
     unset($answer);
